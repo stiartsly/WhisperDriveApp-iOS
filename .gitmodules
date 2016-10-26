@@ -1,7 +1,6 @@
 [submodule "OCCommunicationLib"]
 	path = OCCommunicationLib
 	url = https://github.com/owncloud/ios-library.git
-[submodule "ocdoc"]
+[submodule "user_manual/ocdoc"]
 	path = user_manual/ocdoc
 	url = https://github.com/owncloud/documentation
-	branch = master
