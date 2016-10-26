@@ -200,8 +200,7 @@
     //NSString *newLocalFolder= [[NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", mUser.idUser]];
     NSString *newLocalFolder= [[UtilsUrls getOwnCloudFilePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", (int)mUser.idUser]];
     
-    NSString *urlWithoutAddress = [self getFilePathOnDBByFilePathOnFileDto:filePath andUser:mUser];
-    newLocalFolder = [NSString stringWithFormat:@"%@/%@%@", newLocalFolder,urlWithoutAddress,fileName];
+    newLocalFolder = [NSString stringWithFormat:@"%@/%@%@", newLocalFolder,filePath,fileName];
     
     //We remove the http encoding
     newLocalFolder = [newLocalFolder stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
@@ -253,33 +252,6 @@
 }
 
 
-///-----------------------------------
-/// @name getFilePathOnDBByFullPath
-///-----------------------------------
-/**
- * Return the part of file path that is valid in the data base by full file path
- *
- * @param filePath -> http://domain/sub1/sub2/remote.php/webdav/Documents/
- *                 -> http://domain/sub1/sub2/remote.php/webdav/
- *                 -> http://domain/(subfoldersServer)/k_url_webdav_server/(subfoldersDB)
- * @param user -> user dto
- *
- * @return  pathOnDB -> Documents/
- *                   ->
- *                   -> (subfoldersDB)
- */
-+ (NSString *) getFilePathOnDBByFullPath:(NSString *)filePath andUser:(UserDto *)mUserDto {
-    NSString *pathOnDB = @"";
-
-    NSString *partToRemove = [NSString stringWithFormat:@"%@%@",[self getFullRemoteServerPath:mUserDto],k_url_webdav_server];
-    if([filePath length] >= [partToRemove length]){
-        pathOnDB = [filePath substringFromIndex:[partToRemove length]];
-    }
-    
-    return pathOnDB;
-}
-
-
 //----------------------------------------------
 /// @name getFilePathOnDBByFilePathOnFileDto
 ///---------------------------------------------
@@ -299,55 +271,11 @@
     NSString *pathOnDB =@"";
     
     NSString *partToRemove = [UtilsUrls getRemovedPartOfFilePathAnd:user];
-    if([filePathOnFileDto length] >= [partToRemove length]){
+    if([filePathOnFileDto hasPrefix:partToRemove]){
         pathOnDB = [filePathOnFileDto substringFromIndex:[partToRemove length]];
     }
     
     return pathOnDB;
-}
-
-//----------------------------------------------
-/// @name getFilePathOnDBWithFileName:ByFilePathOnFileDto:andUser
-///---------------------------------------------
-/**
- * Return the part of file path that is valid in the data base with also the fileName by filePath on FileDto andUser
- *
- * @param fileName -> text.pdf
- * @param filePathOnFileDto -> root folder -> /(subfoldersServer)/k_url_webdav_server/
- *                          -> subfolders  -> /(subfoldersServer)/k_url_webdav_server/(subfoldersDB)
- * @param user
- *
- * @return pathOnDB -> root folder -> @"text.pdf"
- *                  -> subfolders  -> @"(subfoldersDB)/text.pdf"
- *
- */
-+ (NSString *) getFilePathOnDBWithFileName:(NSString *)fileName ByFilePathOnFileDto:(NSString *)filePathOnFileDto andUser:(UserDto *) user {
-    
-    NSString *filePath = [NSString stringWithFormat: @"%@%@", [UtilsUrls getFilePathOnDBByFilePathOnFileDto:filePathOnFileDto andUser:user], fileName];
-    
-    return filePath;
-}
-
-//----------------------------------------------
-/// @name getFilePathOnDBwithRootSlashAndWithFileName:ByFilePathOnFileDto:andUser
-///---------------------------------------------
-/**
- * Return the part of file path that is valid in the data base with a root slash and also the fileName by filePath on FileDto andUser
- *
- * @param fileName -> text.pdf
- * @param filePathOnFileDto -> root folder -> /(subfoldersServer)/k_url_webdav_server/
- *                          -> subfolders  -> /(subfoldersServer)/k_url_webdav_server/(subfoldersDB)
- * @param user
- *
- * @return pathOnDB -> root folder -> @"/text.pdf"
- *                  -> subfolders  -> @"/(subfoldersDB)/text.pdf"
- *
- */
-+ (NSString *) getFilePathOnDBwithRootSlashAndWithFileName:(NSString *)fileName ByFilePathOnFileDto:(NSString *)filePathOnFileDto andUser:(UserDto *) user {
-    
-    NSString *filePath = [NSString stringWithFormat:@"/%@%@", [UtilsUrls getFilePathOnDBByFilePathOnFileDto:filePathOnFileDto andUser:user], fileName];
-
-    return filePath;
 }
 
 
@@ -374,23 +302,6 @@
     }
 
     return fullPath;
-}
-
-///-----------------------------------------
-/// @name getRemoteServerPathWithoutFolders
-///-----------------------------------------
-/**
- * Return remote server domain
- *
- * @param mUserDto -> user dto
- *
- * @return  serverDomain -> http://domain
- */
-+ (NSString *) getRemoteServerPathWithoutFolders:(UserDto *)mUser {
-    
-    NSString *serverDomain = [UtilsUrls getHttpAndDomainByURL:[UtilsUrls getFullRemoteServerPath:mUser]];
-    
-    return serverDomain;
 }
 
 ///-----------------------------------
@@ -422,9 +333,7 @@
 /**
  * Return the appName with the path file components whithout percent escape encoding
  *
- * @param destinyPath -> http://domain/sub1/sub2/remote.php/webdav/Documents/...
- *                    -> http://domain/sub1/sub2/remote.php/webdav/
- *                       http://domain/(subfolders)/k_url_webdav_Server/(subfolders)/
+ * @param destinyPath -> /Documents/...
  * @param user -> user dto
  *
  * @return  pathWithAppName -> appName/Documents/...
@@ -433,29 +342,10 @@
 + (NSString *)getPathWithAppNameByDestinyPath:(NSString *)destinyPath andUser:(UserDto *)mUserDto {
     NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
 
-    NSString *pathFile = [self getFilePathOnDBByFullPath:destinyPath andUser:mUserDto];
-    NSString *pathWithAppName = [NSString stringWithFormat:@"%@/%@",appName,pathFile];
+    NSString *pathWithAppName = [NSString stringWithFormat:@"%@/%@",appName,destinyPath];
     
     return  [pathWithAppName stringByReplacingPercentEscapesUsingEncoding:(NSStringEncoding)NSUTF8StringEncoding];
     
-}
-
-
-///-----------------------------------
-/// @name getFullRemoteServerPathWithoutProtocol
-///-----------------------------------
-/**
- * Return the full server path without protocol, (remove the first http or https from an user remote url)
- *
- * @param mUserDto -> user dto
- *
- * @return  remoteUrl -> domainName/(subfoldersServer)/
- */
-+ (NSString *) getFullRemoteServerPathWithoutProtocol:(UserDto *)mUserDto {
-    
-    NSString *remoteUrl = [UtilsUrls getUrlServerWithoutHttpOrHttps:[UtilsUrls getFullRemoteServerPath:mUserDto]];
-    
-    return remoteUrl;
 }
 
 
@@ -488,28 +378,6 @@
     return url;
 }
 
-//-----------------------------------
-/// @name Get a domain by a URL
-///-----------------------------------
-
-/**
- * Method used to get only the domain and the protocol (http/https)
- *
- * @param NSString -> url -->http://domain/(subfolders)/k_url_webdav_server/
- *
- * @return NSString domain --> http://domain
- *
- */
-+ (NSString *) getHttpAndDomainByURL:(NSString *) url {
-    
-    NSArray *urlSplitted = [url componentsSeparatedByString:@"/"];
-    NSString *output = [NSString stringWithFormat:@"%@//%@", [urlSplitted objectAtIndex:0], [urlSplitted objectAtIndex:2]];
-    
-    return output;
-}
-
-
-
 
 //----------------------------------------------
 /// @name getFullRemoteServerFilePathByFile
@@ -525,7 +393,7 @@
  */
 + (NSString *)getFullRemoteServerFilePathByFile:(FileDto *) file andUser:(UserDto *) user {
     
-    NSString *fullFilePath = [NSString stringWithFormat:@"%@%@%@",[UtilsUrls getRemoteServerPathWithoutFolders:user],file.filePath,file.fileName];
+    NSString *fullFilePath = [NSString stringWithFormat:@"%@%@%@",[UtilsUrls getFullRemoteServerPathWithWebDav:user],file.filePath,file.fileName];
     
     DLog(@"fullFilePath: %@", fullFilePath);
     
@@ -546,7 +414,7 @@
  */
 + (NSString *)getFullRemoteServerParentPathByFile:(FileDto *) file andUser:(UserDto *) user {
     
-    NSString *fullFilePath = [NSString stringWithFormat:@"%@%@",[UtilsUrls getRemoteServerPathWithoutFolders:user],file.filePath];
+    NSString *fullFilePath = [NSString stringWithFormat:@"%@%@",[UtilsUrls getFullRemoteServerPathWithWebDav:user],file.filePath];
     
     DLog(@"fullFilePath: %@", fullFilePath);
     
@@ -611,30 +479,6 @@
 }
 
 //-----------------------------------
-/// @name getFileLocalSystemPathByFullPath
-///-----------------------------------
-
-/**
- * Method used to get the system path of a file according to the remote path and the user
- *
- * @param NSString -> fullRemotePath -->http://domain/(subfolders)/k_url_webdav_server/folderA/fileA.txt
- * @param UserDto -> user
- *
- * @return NSString fullLocalDestiny --> /fullLocalSystemPath/idUser/folderA/fileA.txt
- *
- */
-+ (NSString *) getFileLocalSystemPathByFullPath:(NSString *)fullRemotePath andUser:(UserDto *)user{
-
-    NSString *localDestiny = [UtilsUrls  getFilePathOnDBByFullPath:fullRemotePath andUser:user];
-    
-    NSString *ocLocalFolder = [[UtilsUrls getOwnCloudFilePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"%ld", (long)user.idUser]];
-
-    NSString *fullLocalDestiny = [NSString stringWithFormat:@"%@/%@",ocLocalFolder,[localDestiny stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-
-    return fullLocalDestiny;
-}
-
-//-----------------------------------
 /// @name getFileLocalSystemPathByFileDto
 ///-----------------------------------
 
@@ -650,7 +494,7 @@
 + (NSString *) getFileLocalSystemPathByFileDto:(FileDto *)fileDto andUser:(UserDto *)user{
     
     NSString *ocLocalFolder = [[UtilsUrls getOwnCloudFilePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"%ld", (long)user.idUser]];
-    NSString *fullDBPath = [self getFilePathOnDBWithFileName:fileDto.fileName ByFilePathOnFileDto:fileDto.filePath andUser:user];
+    NSString *fullDBPath = [fileDto.filePath stringByAppendingPathComponent:fileDto.fileName];
     NSString *fullLocalDestiny = [NSString stringWithFormat:@"%@/%@",ocLocalFolder,[fullDBPath stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     
     return fullLocalDestiny;

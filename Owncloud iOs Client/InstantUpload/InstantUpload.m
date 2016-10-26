@@ -200,7 +200,7 @@
                         
                     }];
                     
-                    [app.prepareFiles addAssetsToUpload:newPhotos andRemoteFolder:[[NSString alloc] initWithFormat:@"%@%@/",[UtilsUrls getFullRemoteServerPathWithWebDav:ACTIVE_USER], k_path_instant_upload]];
+                    [app.prepareFiles addAssetsToUpload:newPhotos andRemoteFolder:k_path_instant_upload];
                 }
                 
             } else {

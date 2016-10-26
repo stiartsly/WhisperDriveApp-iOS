@@ -175,30 +175,13 @@
     
     _mNewName = name;
     
-    NSString *fileDBPathToCheck;
-    NSString *fileDBPathToDestination;
-    
-    //Get the file database path of the item without utf8
-    fileDBPathToDestination  = [UtilsUrls getFilePathOnDBByFullPath:self.currentRemoteFolder andUser:app.activeUser];
-    
-    if ([_selectedFileDto isDirectory]) {
-        //If is directory quit the "/"
-        //Get the file database path of the item for the check with the server
-        fileDBPathToCheck  = [UtilsUrls getFilePathOnDBByFullPath:[NSString stringWithFormat:@"%@", self.currentRemoteFolder] andUser:app.activeUser];
-    } else {
-        //Get the file database path of the item for the check with the server
-        fileDBPathToCheck  = [UtilsUrls getFilePathOnDBByFullPath:[NSString stringWithFormat:@"%@%@", self.currentRemoteFolder,self.selectedFileDto.fileName] andUser:app.activeUser];
-    }
-    
-    DLog(@"FilePath: %@", fileDBPathToCheck);
-    DLog(@"FilePath: %@", fileDBPathToDestination);
     DLog(@"Destination file: %@%@", self.currentRemoteFolder, self.selectedFileDto.fileName);
     
     //Create the path of the destination
-    _destinationFile = [NSString stringWithFormat:@"%@%@",fileDBPathToDestination,[name encodeString:NSUTF8StringEncoding]];
+    _destinationFile = [NSString stringWithFormat:@"%@%@",self.currentRemoteFolder,[name encodeString:NSUTF8StringEncoding]];
     
     //Create path to check with the server
-    NSString *pathToCheck=[NSString stringWithFormat:@"%@%@",self.currentRemoteFolder,[name encodeString:NSUTF8StringEncoding]];
+    NSString *pathToCheck=[NSString stringWithFormat:@"%@%@%@",[UtilsUrls getFullRemoteServerPathWithWebDav:app.activeUser],self.currentRemoteFolder,[name encodeString:NSUTF8StringEncoding]];
     
     //If is directory we need the "/"
     if ([_selectedFileDto isDirectory]) {
@@ -418,9 +401,7 @@
         
         self.selectedFileDto=[ManageFilesDB getFileDtoByIdFile:self.selectedFileDto.idFile];
         
-        NSString *newFilePathOnDB = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.selectedFileDto.filePath andUser:app.activeUser];
-        
-        [self renameFolderChildsWithFilePath:[NSString stringWithFormat:@"%@%@",newFilePathOnDB, self.selectedFileDto.fileName] ofFileId:self.selectedFileDto.idFile];
+        [self renameFolderChildsWithFilePath:[NSString stringWithFormat:@"%@%@",self.selectedFileDto.filePath, self.selectedFileDto.fileName] ofFileId:self.selectedFileDto.idFile];
         
         
         //self.mNewName=[NSString stringWithFormat:@"%@/", self.mNewName];
@@ -503,7 +484,7 @@
     //If is IPAD we update the fileDto in case that the current file is the same on preview
     if (!IS_IPHONE) {
         if (app.detailViewController.file.idFile == _selectedFileDto.idFile) {
-            app.detailViewController.file = [ManageFilesDB getFileDtoByFileName:[_mNewName encodeString:NSUTF8StringEncoding] andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_selectedFileDto.filePath andUser:app.activeUser] andUser:app.activeUser];
+            app.detailViewController.file = [ManageFilesDB getFileDtoByFileName:[_mNewName encodeString:NSUTF8StringEncoding] andFilePath:_selectedFileDto.filePath andUser:app.activeUser];
             app.detailViewController.titleLabel.text = [app.detailViewController.file.fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             
         }

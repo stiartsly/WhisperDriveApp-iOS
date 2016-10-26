@@ -94,8 +94,7 @@
 //Get the file dto related with the upload ofline if exist
 - (FileDto *) getFileDtoOfTheUploadOffline{
     
-    NSString *folderName = [UtilsUrls getFilePathOnDBByFullPath:self.currentUpload.destinyFolder andUser:self.userUploading];
-    FileDto *uploadFile = [ManageFilesDB getFileDtoByFileName:self.currentUpload.uploadFileName andFilePath:folderName andUser:self.userUploading];
+    FileDto *uploadFile = [ManageFilesDB getFileDtoByFileName:self.currentUpload.uploadFileName andFilePath:self.currentUpload.destinyFolder andUser:self.userUploading];
     
     return uploadFile;
 }
@@ -246,7 +245,7 @@
     
     [[AppDelegate sharedOCCommunication] setUserAgent:[UtilsUrls getUserAgent]];
     
-    NSString *urlClean = [NSString stringWithFormat:@"%@%@", _currentUpload.destinyFolder, _currentUpload.uploadFileName];
+    NSString *urlClean = [NSString stringWithFormat:@"%@%@%@", [UtilsUrls getFullRemoteServerPathWithWebDav:_userUploading], _currentUpload.destinyFolder, _currentUpload.uploadFileName];
     urlClean = [urlClean stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     __block BOOL firstTime = YES;
@@ -481,17 +480,16 @@
     
     AppDelegate *app = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     DLog(@"Overwriten process active: Cancel a file");
-    NSString *localFolder = [UtilsUrls getFilePathOnDBByFullPath:self.currentUpload.destinyFolder andUser:self.userUploading];
-    DLog(@"Local folder:%@",localFolder);
     
-    FileDto *deleteOverwriteFile = [ManageFilesDB getFileDtoByFileName:self.currentUpload.uploadFileName andFilePath:localFolder andUser:self.userUploading];
+    FileDto *deleteOverwriteFile = [ManageFilesDB getFileDtoByFileName:self.currentUpload.uploadFileName andFilePath:self.currentUpload.destinyFolder andUser:self.userUploading];
     DLog(@"id file: %ld",(long)deleteOverwriteFile.idFile);
     
     //In iPad clean the view
     if (!IS_IPHONE){
         [app.detailViewController presentWhiteView];
         //Launch a notification for update the previewed file
-        [[NSNotificationCenter defaultCenter] postNotificationName:FileDeleteInAOverwriteProcess object:self.currentUpload.destinyFolder];
+        NSString *destinyPath = [NSString stringWithFormat:@"%@%@%@", [UtilsUrls getFullRemoteServerPathWithWebDav:_userUploading], self.currentUpload.destinyFolder, self.currentUpload.uploadFileName];
+        [[NSNotificationCenter defaultCenter] postNotificationName:FileDeleteInAOverwriteProcess object:destinyPath];
     }
     
     if (!deleteOverwriteFile.isFavorite){
@@ -705,7 +703,7 @@
     
     //FileName full path
     NSString *serverPath = [UtilsUrls getFullRemoteServerPathWithWebDav:self.userUploading];
-    NSString *path = [NSString stringWithFormat:@"%@%@%@",serverPath, [UtilsUrls getFilePathOnDBByFilePathOnFileDto:overwrittenFile.filePath andUser:self.userUploading], overwrittenFile.fileName];
+    NSString *path = [NSString stringWithFormat:@"%@%@%@",serverPath, overwrittenFile.filePath, overwrittenFile.fileName];
     
     path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
@@ -729,10 +727,7 @@
             //Change the filePath from the library to our format
             for (FileDto *currentFile in items) {
                 //Remove part of the item file path
-                NSString *partToRemove = [UtilsUrls getRemovedPartOfFilePathAnd:self.userUploading];
-                if([currentFile.filePath length] >= [partToRemove length]){
-                    currentFile.filePath = [currentFile.filePath substringFromIndex:[partToRemove length]];
-                }
+                currentFile.filePath = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:currentFile.filePath andUser:self.userUploading];
             }
             
             DLog(@"The directory List have: %lu elements", (unsigned long)items.count);
@@ -744,10 +739,9 @@
                 FileDto *currentFileDto = [items objectAtIndex:0];
                 DLog(@"currentFileDto: %@", currentFileDto.etag);
                 //Update the etag
-                NSString *folderName=[UtilsUrls getFilePathOnDBByFilePathOnFileDto:overwrittenFile.filePath andUser:self.userUploading];
-                [ManageFilesDB updateEtagOfFileDtoByFileName:overwrittenFile.fileName andFilePath:folderName andActiveUser:self.userUploading withNewEtag:currentFileDto.etag];
+                [ManageFilesDB updateEtagOfFileDtoByFileName:overwrittenFile.fileName andFilePath:overwrittenFile.filePath andActiveUser:self.userUploading withNewEtag:currentFileDto.etag];
                 //Set file status like downloaded in Data Base
-                [ManageFilesDB updateDownloadStateOfFileDtoByFileName:overwrittenFile.fileName andFilePath:folderName andActiveUser:self.userUploading withState:downloaded];
+                [ManageFilesDB updateDownloadStateOfFileDtoByFileName:overwrittenFile.fileName andFilePath:overwrittenFile.filePath andActiveUser:self.userUploading withState:downloaded];
                 
                 //Launch a notification for update the file previewed
                 [[NSNotificationCenter defaultCenter] postNotificationName:UploadOverwriteFileNotification object:nil];
@@ -784,7 +778,7 @@
     
     //FileName full path
     NSString *serverPath = [UtilsUrls getFullRemoteServerPathWithWebDav:self.userUploading];
-    NSString *path = [NSString stringWithFormat:@"%@%@%@",serverPath, [UtilsUrls getFilePathOnDBByFilePathOnFileDto:overwrittenFile.filePath andUser:self.userUploading], overwrittenFile.fileName];
+    NSString *path = [NSString stringWithFormat:@"%@%@%@",serverPath, overwrittenFile.filePath, overwrittenFile.fileName];
     
     path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
@@ -809,10 +803,7 @@
             //Change the filePath from the library to our format
             for (FileDto *currentFile in items) {
                 //Remove part of the item file path
-                NSString *partToRemove = [UtilsUrls getRemovedPartOfFilePathAnd:self.userUploading];
-                if([currentFile.filePath length] >= [partToRemove length]){
-                    currentFile.filePath = [currentFile.filePath substringFromIndex:[partToRemove length]];
-                }
+                currentFile.filePath = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:currentFile.filePath andUser:self.userUploading];
             }
             
             DLog(@"The directory List have: %lu elements", (unsigned long)items.count);

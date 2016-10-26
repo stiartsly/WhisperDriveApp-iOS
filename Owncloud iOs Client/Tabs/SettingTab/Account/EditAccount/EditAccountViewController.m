@@ -279,18 +279,7 @@ NSString *relaunchErrorCredentialFilesNotification = @"relaunchErrorCredentialFi
     } else {
         
         UserDto *userDto = [[UserDto alloc] init];
-        
-        //We check if start with http or https to concat it
-        if([self.urlTextField.text hasPrefix:@"http://"] || [self.urlTextField.text hasPrefix:@"https://"]) {
-            userDto.url = [self getUrlChecked: self.urlTextField.text];
-            
-        } else {
-            if(isHttps) {
-                userDto.url = [NSString stringWithFormat:@"%@%@",@"https://", [self getUrlChecked: self.urlTextField.text]];
-            } else {
-                userDto.url = [NSString stringWithFormat:@"%@%@",@"http://", [self getUrlChecked: self.urlTextField.text]];
-            }
-        }
+        userDto.url = [self getUrl];
         
         self.selectedUser.password = self.passwordTextField.text;
         

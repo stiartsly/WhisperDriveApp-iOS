@@ -91,8 +91,7 @@
     [sharedCommunication setUserAgent:[UtilsUrls getUserAgent]];
     
     //FileName full path
-    NSString *serverPath = [UtilsUrls getFullRemoteServerPathWithWebDav:self.user];
-    NSString *path = [NSString stringWithFormat:@"%@%@%@",serverPath, [UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.file.filePath andUser:self.user], self.file.fileName];
+    NSString *path = [UtilsUrls getFullRemoteServerFilePathByFile:self.file andUser:self.user];
     
     path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
@@ -131,10 +130,7 @@
             //Change the filePath from the library to our format
             for (FileDto *currentFile in items) {
                 //Remove part of the item file path
-                NSString *partToRemove = [UtilsUrls getRemovedPartOfFilePathAnd:self.user];
-                if([currentFile.filePath length] >= [partToRemove length]){
-                    currentFile.filePath = [currentFile.filePath substringFromIndex:[partToRemove length]];
-                }
+                currentFile.filePath = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:currentFile.filePath andUser:self.user];
             }
             
             DLog(@"The directory List have: %lu elements", (unsigned long)items.count);
@@ -198,9 +194,7 @@
 - (void) startDownload {
     
     OCCommunication *sharedCommunication = [DocumentPickerViewController sharedOCCommunication];
-    NSArray *splitedUrl = [[UtilsUrls getFullRemoteServerPath:self.user] componentsSeparatedByString:@"/"];
-    NSString *serverUrl = [NSString stringWithFormat:@"%@%@%@",[NSString stringWithFormat:@"%@/%@/%@",[splitedUrl objectAtIndex:0],[splitedUrl objectAtIndex:1],[splitedUrl objectAtIndex:2]], self.file.filePath, self.file.fileName];
-    
+    NSString *serverUrl = [UtilsUrls getFullRemoteServerFilePathByFile:self.file andUser:self.user];
     serverUrl = [serverUrl stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     __block NSString *localPath = nil;
@@ -460,7 +454,7 @@
     DLog(@"Old local path: %@", file.localFolder);
     
     //Update the file
-    self.file = [ManageFilesDB getFileDtoByFileName:file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:file.filePath andUser:self.user] andUser:self.user];
+    self.file = [ManageFilesDB getFileDtoByFileName:file.fileName andFilePath:file.filePath andUser:self.user];
     
     //Delete the old file
     NSFileManager *fileManager=nil;

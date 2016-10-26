@@ -113,9 +113,9 @@
     
     _userName = app.activeUser.username;
     
-    _serverName = app.activeUser.url;
+    _serverName = app.activeUser.deviceID ? app.activeUser.deviceName : app.activeUser.url;
     
-    _remoteFolder = [UtilsUrls getFullRemoteServerPathWithWebDav:app.activeUser];
+    _remoteFolder = @"";
     
     NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
     _folderName=appName;
@@ -633,19 +633,18 @@
 
 #pragma mark Select Folder Navigation Delegate Methods
 - (void)folderSelected:(NSString*)folder{
-    DLog(@"Change Folder");
+    DLog(@"Change Folder : %@", folder);
     //TODO. Change current Remote Folder
     _remoteFolder=folder;
     
-    NSArray *splitedUrl = [folder componentsSeparatedByString:@"/"];
-    // int cont = [splitedUrl count];
-    NSString *folderName = [NSString stringWithFormat:@"/%@",[splitedUrl objectAtIndex:([splitedUrl count]-2)]];
-    NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
-    DLog(@"Folder is:%@", folderName);
-    if ([folderName isEqualToString:@"/webdav.php"] || [folderName isEqualToString:@"/webdav"]) {
-        folderName=appName;
+    if (folder.length == 0) {
+        NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
+        _folderName = appName;
     }
-    _folderName=folderName;
+    else {
+        NSArray *splitedUrl = [folder componentsSeparatedByString:@"/"];
+        _folderName = [NSString stringWithFormat:@"/%@",[splitedUrl objectAtIndex:([splitedUrl count]-2)]];
+    }
     
     [self.tableView reloadData];
     
@@ -964,15 +963,9 @@
     //Get the name in the correct encoding
     NSString *name=[_nameFileTextField.text encodeString:NSUTF8StringEncoding];
     
-    //The _remoteFolder: https://domain/(subfoldersServer)/k_url_webdav_server/(subfoldersDB)/
-    //The nameFileTextField: FileType.pdf
-    //The folder Name: (subfoldersDB)/
-    
-    NSString *folderName = [UtilsUrls getFilePathOnDBByFullPath:_remoteFolder andUser:app.activeUser];
-    
     //Obtain the file that the user wants overwrite
     FileDto *file = nil;
-    file = [ManageFilesDB getFileDtoByFileName:name andFilePath:folderName andUser:app.activeUser];
+    file = [ManageFilesDB getFileDtoByFileName:name andFilePath:_remoteFolder andUser:app.activeUser];
     
     //Check if this file is being updated and cancel it
     Download *downloadFile;

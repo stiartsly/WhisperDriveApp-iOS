@@ -286,6 +286,43 @@
 		14EC1956195B297F00B02AB6 /* sharedItem@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 14EC1954195B297F00B02AB6 /* sharedItem@2x.png */; };
 		14EFCAEB17FAFEAA007A38B6 /* MainAppIcon_76-76.png in Resources */ = {isa = PBXBuildFile; fileRef = 14EFCAEA17FAFEAA007A38B6 /* MainAppIcon_76-76.png */; };
 		14EFCAED17FAFF48007A38B6 /* MainAppIcon_40-40.png in Resources */ = {isa = PBXBuildFile; fileRef = 14EFCAEC17FAFF48007A38B6 /* MainAppIcon_40-40.png */; };
+		1758213F1DAF30C700736D41 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 1758213C1DAF30C700736D41 /* Device.m */; };
+		175821401DAF30C700736D41 /* DeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1758213E1DAF30C700736D41 /* DeviceManager.m */; };
+		1794951F1DAE3F8D006B86EE /* WhisperManagedCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1794951C1DAE3F83006B86EE /* WhisperManagedCore.framework */; };
+		17B2E4C61DBE1422002A983D /* DeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1758213E1DAF30C700736D41 /* DeviceManager.m */; };
+		17B2E4C71DBE1422002A983D /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 1758213C1DAF30C700736D41 /* Device.m */; };
+		17B92E371DC0871300D9F49A /* WhisperManagedCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1794951C1DAE3F83006B86EE /* WhisperManagedCore.framework */; };
+		17B92E381DC0873A00D9F49A /* WhisperManagedCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1794951C1DAE3F83006B86EE /* WhisperManagedCore.framework */; };
+		17B92E391DC0875300D9F49A /* WhisperManagedCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1794951C1DAE3F83006B86EE /* WhisperManagedCore.framework */; };
+		17B92E3A1DC087D600D9F49A /* DeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1758213E1DAF30C700736D41 /* DeviceManager.m */; };
+		17B92E3B1DC087D600D9F49A /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 1758213C1DAF30C700736D41 /* Device.m */; };
+		17B92E3C1DC087E400D9F49A /* DeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1758213E1DAF30C700736D41 /* DeviceManager.m */; };
+		17B92E3D1DC087E400D9F49A /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 1758213C1DAF30C700736D41 /* Device.m */; };
+		17B92E3E1DC0880000D9F49A /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20D931DB0844B005ACAF0 /* GCDAsyncSocket.m */; };
+		17B92E3F1DC0880000D9F49A /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20D951DB0844B005ACAF0 /* GCDAsyncUdpSocket.m */; };
+		17B92E401DC0884100D9F49A /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20D931DB0844B005ACAF0 /* GCDAsyncSocket.m */; };
+		17B92E411DC0884100D9F49A /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20D951DB0844B005ACAF0 /* GCDAsyncUdpSocket.m */; };
+		17B92E421DC088C000D9F49A /* WhisperManagedCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1794951C1DAE3F83006B86EE /* WhisperManagedCore.framework */; };
+		17B92E431DC088C000D9F49A /* WhisperManagedCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1794951C1DAE3F83006B86EE /* WhisperManagedCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		17D20D961DB0844B005ACAF0 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20D931DB0844B005ACAF0 /* GCDAsyncSocket.m */; };
+		17D20D971DB0844B005ACAF0 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20D951DB0844B005ACAF0 /* GCDAsyncUdpSocket.m */; };
+		17D20DA31DB08857005ACAF0 /* AddDeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20D9A1DB08857005ACAF0 /* AddDeviceViewController.m */; };
+		17D20DA41DB08857005ACAF0 /* DeviceChooseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20D9C1DB08857005ACAF0 /* DeviceChooseViewController.m */; };
+		17D20DA61DB08857005ACAF0 /* InputDeviceIDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20DA01DB08857005ACAF0 /* InputDeviceIDViewController.m */; };
+		17D20DA71DB08857005ACAF0 /* ScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20DA21DB08857005ACAF0 /* ScanViewController.m */; };
+		17D20DB31DB0B1D5005ACAF0 /* check_ok@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 17D20DA91DB0B1D5005ACAF0 /* check_ok@2x.png */; };
+		17D20DB41DB0B1D5005ACAF0 /* device_pre@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 17D20DAA1DB0B1D5005ACAF0 /* device_pre@2x.png */; };
+		17D20DB51DB0B1D5005ACAF0 /* flashlight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 17D20DAB1DB0B1D5005ACAF0 /* flashlight@2x.png */; };
+		17D20DB61DB0B1D5005ACAF0 /* scan_bl@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 17D20DAC1DB0B1D5005ACAF0 /* scan_bl@2x.png */; };
+		17D20DB71DB0B1D5005ACAF0 /* scan_br@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 17D20DAD1DB0B1D5005ACAF0 /* scan_br@2x.png */; };
+		17D20DB81DB0B1D5005ACAF0 /* scan_line@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 17D20DAE1DB0B1D5005ACAF0 /* scan_line@2x.png */; };
+		17D20DB91DB0B1D5005ACAF0 /* scan_tl@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 17D20DAF1DB0B1D5005ACAF0 /* scan_tl@2x.png */; };
+		17D20DBA1DB0B1D5005ACAF0 /* scan_tr@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 17D20DB01DB0B1D5005ACAF0 /* scan_tr@2x.png */; };
+		17D20DBB1DB0B1D5005ACAF0 /* select@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 17D20DB11DB0B1D5005ACAF0 /* select@3x.png */; };
+		17D20DBC1DB0B1D5005ACAF0 /* unselect@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 17D20DB21DB0B1D5005ACAF0 /* unselect@3x.png */; };
+		17D20DBF1DB0D2E3005ACAF0 /* DeviceSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20DBE1DB0D2E3005ACAF0 /* DeviceSettingViewController.m */; };
+		17E98AF41DB6133100A422C8 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20D931DB0844B005ACAF0 /* GCDAsyncSocket.m */; };
+		17E98AF51DB6133100A422C8 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20D951DB0844B005ACAF0 /* GCDAsyncUdpSocket.m */; };
 		400560751A03B1190030D502 /* MainAppIcon_40-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 400560741A03B1190030D502 /* MainAppIcon_40-40@2x.png */; };
 		400560771A03B4F80030D502 /* MainAppIcon_40-40@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 400560761A03B4F80030D502 /* MainAppIcon_40-40@3x.png */; };
 		4005607C1A03CEEE0030D502 /* MainAppIcon_60-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4005607B1A03CEEE0030D502 /* MainAppIcon_60-60@2x.png */; };
@@ -1029,6 +1066,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		179495211DAE3F8D006B86EE /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				17B92E431DC088C000D9F49A /* WhisperManagedCore.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EAB0AB5919ED356A00764C31 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1402,6 +1450,35 @@
 		14EC1954195B297F00B02AB6 /* sharedItem@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sharedItem@2x.png"; sourceTree = "<group>"; };
 		14EFCAEA17FAFEAA007A38B6 /* MainAppIcon_76-76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MainAppIcon_76-76.png"; sourceTree = "<group>"; };
 		14EFCAEC17FAFF48007A38B6 /* MainAppIcon_40-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MainAppIcon_40-40.png"; sourceTree = "<group>"; };
+		1758213B1DAF30C700736D41 /* Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Device.h; sourceTree = "<group>"; };
+		1758213C1DAF30C700736D41 /* Device.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Device.m; sourceTree = "<group>"; };
+		1758213D1DAF30C700736D41 /* DeviceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceManager.h; sourceTree = "<group>"; };
+		1758213E1DAF30C700736D41 /* DeviceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceManager.m; sourceTree = "<group>"; };
+		1794951C1DAE3F83006B86EE /* WhisperManagedCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = WhisperManagedCore.framework; sourceTree = "<group>"; };
+		17D20D921DB0844B005ACAF0 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
+		17D20D931DB0844B005ACAF0 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
+		17D20D941DB0844B005ACAF0 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		17D20D951DB0844B005ACAF0 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
+		17D20D991DB08857005ACAF0 /* AddDeviceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddDeviceViewController.h; sourceTree = "<group>"; };
+		17D20D9A1DB08857005ACAF0 /* AddDeviceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddDeviceViewController.m; sourceTree = "<group>"; };
+		17D20D9B1DB08857005ACAF0 /* DeviceChooseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceChooseViewController.h; sourceTree = "<group>"; };
+		17D20D9C1DB08857005ACAF0 /* DeviceChooseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceChooseViewController.m; sourceTree = "<group>"; };
+		17D20D9F1DB08857005ACAF0 /* InputDeviceIDViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputDeviceIDViewController.h; sourceTree = "<group>"; };
+		17D20DA01DB08857005ACAF0 /* InputDeviceIDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputDeviceIDViewController.m; sourceTree = "<group>"; };
+		17D20DA11DB08857005ACAF0 /* ScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScanViewController.h; sourceTree = "<group>"; };
+		17D20DA21DB08857005ACAF0 /* ScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScanViewController.m; sourceTree = "<group>"; };
+		17D20DA91DB0B1D5005ACAF0 /* check_ok@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "check_ok@2x.png"; sourceTree = "<group>"; };
+		17D20DAA1DB0B1D5005ACAF0 /* device_pre@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "device_pre@2x.png"; sourceTree = "<group>"; };
+		17D20DAB1DB0B1D5005ACAF0 /* flashlight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flashlight@2x.png"; sourceTree = "<group>"; };
+		17D20DAC1DB0B1D5005ACAF0 /* scan_bl@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scan_bl@2x.png"; sourceTree = "<group>"; };
+		17D20DAD1DB0B1D5005ACAF0 /* scan_br@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scan_br@2x.png"; sourceTree = "<group>"; };
+		17D20DAE1DB0B1D5005ACAF0 /* scan_line@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scan_line@2x.png"; sourceTree = "<group>"; };
+		17D20DAF1DB0B1D5005ACAF0 /* scan_tl@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scan_tl@2x.png"; sourceTree = "<group>"; };
+		17D20DB01DB0B1D5005ACAF0 /* scan_tr@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scan_tr@2x.png"; sourceTree = "<group>"; };
+		17D20DB11DB0B1D5005ACAF0 /* select@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "select@3x.png"; sourceTree = "<group>"; };
+		17D20DB21DB0B1D5005ACAF0 /* unselect@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unselect@3x.png"; sourceTree = "<group>"; };
+		17D20DBD1DB0D2E3005ACAF0 /* DeviceSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceSettingViewController.h; sourceTree = "<group>"; };
+		17D20DBE1DB0D2E3005ACAF0 /* DeviceSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceSettingViewController.m; sourceTree = "<group>"; };
 		4002B01A1D421A7100520FB3 /* sq */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sq; path = sq.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4002B01C1D421A8300520FB3 /* sl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sl; path = sl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		400560741A03B1190030D502 /* MainAppIcon_40-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MainAppIcon_40-40@2x.png"; sourceTree = "<group>"; };
@@ -1921,6 +1998,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1794951F1DAE3F8D006B86EE /* WhisperManagedCore.framework in Frameworks */,
 				59C71D281A921A5100F66166 /* ImageIO.framework in Frameworks */,
 				404FDA241A36E5E5008AB4E1 /* CoreLocation.framework in Frameworks */,
 				EA8667E918AA299000D3550D /* libownCloudiOS.a in Frameworks */,
@@ -1944,6 +2022,7 @@
 				1324298115ADBB3700DF823E /* CoreGraphics.framework in Frameworks */,
 				13824C0A16034C2200A95EAD /* libcrypto.a in Frameworks */,
 				13824C0B16034C2200A95EAD /* libssl.a in Frameworks */,
+				17B92E421DC088C000D9F49A /* WhisperManagedCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1961,6 +2040,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17B92E381DC0873A00D9F49A /* WhisperManagedCore.framework in Frameworks */,
 				EAC6E5F51AB0912200CCF8C4 /* libcrypto.a in Frameworks */,
 				EAC6E5F41AB0911600CCF8C4 /* libssl.a in Frameworks */,
 				EAF7217A1AAF1B33009F5596 /* libsqlite3.0.dylib in Frameworks */,
@@ -1972,6 +2052,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17B92E391DC0875300D9F49A /* WhisperManagedCore.framework in Frameworks */,
 				59A6F4EB1A161ED400345229 /* libcrypto.a in Frameworks */,
 				59A6F4EC1A161ED400345229 /* libssl.a in Frameworks */,
 				59D700FC1A122BB6006DB0B7 /* MobileCoreServices.framework in Frameworks */,
@@ -1984,6 +2065,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17B92E371DC0871300D9F49A /* WhisperManagedCore.framework in Frameworks */,
 				59E58B771B04ED20004E9739 /* MobileCoreServices.framework in Frameworks */,
 				59E58B751B04ED15004E9739 /* libcrypto.a in Frameworks */,
 				59E58B761B04ED15004E9739 /* libssl.a in Frameworks */,
@@ -2034,6 +2116,7 @@
 		1324297B15ADBB3700DF823E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1794951C1DAE3F83006B86EE /* WhisperManagedCore.framework */,
 				59C71D271A921A5100F66166 /* ImageIO.framework */,
 				404FDA231A36E5E5008AB4E1 /* CoreLocation.framework */,
 				EA68969217F59A090033B3C1 /* AudioToolbox.framework */,
@@ -2069,6 +2152,7 @@
 				1324298B15ADBB3700DF823E /* AppDelegate.h */,
 				1324298C15ADBB3700DF823E /* AppDelegate.m */,
 				59F470311C5F97BA005B6091 /* Launch Screen.storyboard */,
+				1758213A1DAF30C700736D41 /* Device */,
 				148DD5B11778425400FB9977 /* Branding */,
 				148DD5B81778501B00FB9977 /* Cells */,
 				40EDF89D1B4D112900700E3A /* HelpGuide */,
@@ -2696,6 +2780,7 @@
 		1487F1B7177C35AA004A1A5A /* ImageSystem */ = {
 			isa = PBXGroup;
 			children = (
+				17D20DA81DB0B1D5005ACAF0 /* Device */,
 				1487F1B8177C35AA004A1A5A /* Account */,
 				1487F1BD177C35AA004A1A5A /* Arrow */,
 				1487F1CB177C35AA004A1A5A /* ExternalLibreries */,
@@ -2893,6 +2978,7 @@
 		148DD5DD1778549700FB9977 /* ExternalLibreries */ = {
 			isa = PBXGroup;
 			children = (
+				17D20D911DB0844B005ACAF0 /* GCDAsyncSocket */,
 				59915D9B1BBC00930015FBF3 /* CWLOrderedDictionary */,
 				EABD88CE1BBE827D00DA5281 /* TSMessages */,
 				40EDF8AB1B4D1E9600700E3A /* JazzHands */,
@@ -3008,6 +3094,56 @@
 				14B0083F18FD1B5B004CB06B /* EmptyCell.xib */,
 			);
 			name = EmptyCell;
+			sourceTree = "<group>";
+		};
+		1758213A1DAF30C700736D41 /* Device */ = {
+			isa = PBXGroup;
+			children = (
+				1758213D1DAF30C700736D41 /* DeviceManager.h */,
+				1758213E1DAF30C700736D41 /* DeviceManager.m */,
+				1758213B1DAF30C700736D41 /* Device.h */,
+				1758213C1DAF30C700736D41 /* Device.m */,
+				17D20D9B1DB08857005ACAF0 /* DeviceChooseViewController.h */,
+				17D20D9C1DB08857005ACAF0 /* DeviceChooseViewController.m */,
+				17D20DBD1DB0D2E3005ACAF0 /* DeviceSettingViewController.h */,
+				17D20DBE1DB0D2E3005ACAF0 /* DeviceSettingViewController.m */,
+				17D20DA11DB08857005ACAF0 /* ScanViewController.h */,
+				17D20DA21DB08857005ACAF0 /* ScanViewController.m */,
+				17D20D9F1DB08857005ACAF0 /* InputDeviceIDViewController.h */,
+				17D20DA01DB08857005ACAF0 /* InputDeviceIDViewController.m */,
+				17D20D991DB08857005ACAF0 /* AddDeviceViewController.h */,
+				17D20D9A1DB08857005ACAF0 /* AddDeviceViewController.m */,
+			);
+			path = Device;
+			sourceTree = "<group>";
+		};
+		17D20D911DB0844B005ACAF0 /* GCDAsyncSocket */ = {
+			isa = PBXGroup;
+			children = (
+				17D20D921DB0844B005ACAF0 /* GCDAsyncSocket.h */,
+				17D20D931DB0844B005ACAF0 /* GCDAsyncSocket.m */,
+				17D20D941DB0844B005ACAF0 /* GCDAsyncUdpSocket.h */,
+				17D20D951DB0844B005ACAF0 /* GCDAsyncUdpSocket.m */,
+			);
+			name = GCDAsyncSocket;
+			path = ExternalLibreries/GCDAsyncSocket;
+			sourceTree = "<group>";
+		};
+		17D20DA81DB0B1D5005ACAF0 /* Device */ = {
+			isa = PBXGroup;
+			children = (
+				17D20DA91DB0B1D5005ACAF0 /* check_ok@2x.png */,
+				17D20DAA1DB0B1D5005ACAF0 /* device_pre@2x.png */,
+				17D20DAB1DB0B1D5005ACAF0 /* flashlight@2x.png */,
+				17D20DAC1DB0B1D5005ACAF0 /* scan_bl@2x.png */,
+				17D20DAD1DB0B1D5005ACAF0 /* scan_br@2x.png */,
+				17D20DAE1DB0B1D5005ACAF0 /* scan_line@2x.png */,
+				17D20DAF1DB0B1D5005ACAF0 /* scan_tl@2x.png */,
+				17D20DB01DB0B1D5005ACAF0 /* scan_tr@2x.png */,
+				17D20DB11DB0B1D5005ACAF0 /* select@3x.png */,
+				17D20DB21DB0B1D5005ACAF0 /* unselect@3x.png */,
+			);
+			path = Device;
 			sourceTree = "<group>";
 		};
 		400A63251B4FD2C100890579 /* HelpGuide */ = {
@@ -3852,6 +3988,7 @@
 				1324297615ADBB3700DF823E /* Resources */,
 				EAB0AB5919ED356A00764C31 /* Embed App Extensions */,
 				4074F2AF1C5782860029AAFE /* ShellScript */,
+				179495211DAE3F8D006B86EE /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -3952,7 +4089,7 @@
 				LastUpgradeCheck = 0800;
 				TargetAttributes = {
 					1324297715ADBB3700DF823E = {
-						DevelopmentTeam = 9B5WD74GWJ;
+						DevelopmentTeam = 5935J43UU8;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -3965,7 +4102,7 @@
 					};
 					EA6606941AA767F700BA2C65 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = 9B5WD74GWJ;
+						DevelopmentTeam = 5935J43UU8;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -3978,7 +4115,7 @@
 					};
 					EAB0AB3119ED356A00764C31 = {
 						CreatedOnToolsVersion = 6.0.1;
-						DevelopmentTeam = 9B5WD74GWJ;
+						DevelopmentTeam = 5935J43UU8;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -3991,7 +4128,7 @@
 					};
 					EAB0AB3F19ED356A00764C31 = {
 						CreatedOnToolsVersion = 6.0.1;
-						DevelopmentTeam = 9B5WD74GWJ;
+						DevelopmentTeam = 5935J43UU8;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -4133,6 +4270,7 @@
 				59EDC4201C611D6C0050939C /* iphoneFiles@2x.png in Resources */,
 				13A5ADB418883C77000EB617 /* CopyLinkShareipad@2x.png in Resources */,
 				145EA7D217786FAC0087CDDB /* InfoPlist.strings in Resources */,
+				17D20DB81DB0B1D5005ACAF0 /* scan_line@2x.png in Resources */,
 				1487F203177C35AA004A1A5A /* CompanyLogo.png in Resources */,
 				1487F204177C35AA004A1A5A /* CompanyLogo@2x.png in Resources */,
 				14A87ADF1933390900D0D5AD /* FileDownloadingIcon.png in Resources */,
@@ -4151,6 +4289,7 @@
 				400904DC1A02B54600E3DD15 /* MainAppIcon_60-60@3x.png in Resources */,
 				40E354D91A14FD66000E7FE4 /* pdf_icon@3x.png in Resources */,
 				1487F219177C35AA004A1A5A /* BackRootFolderIcon@2x.png in Resources */,
+				17D20DBB1DB0B1D5005ACAF0 /* select@3x.png in Resources */,
 				13A5ADB718883C77000EB617 /* WhatsappShareipad.png in Resources */,
 				1487F21A177C35AA004A1A5A /* doc_icon.png in Resources */,
 				1487F21B177C35AA004A1A5A /* doc_icon@2x.png in Resources */,
@@ -4160,6 +4299,7 @@
 				40E354CB1A14D6C2000E7FE4 /* favoriteTB-filled@3x.png in Resources */,
 				13A726C918B399EC00795A90 /* ownCloud-xmas@2x.png in Resources */,
 				149D98BD195AAD08005E0C73 /* fileSharedWithUs.png in Resources */,
+				17D20DB61DB0B1D5005ACAF0 /* scan_bl@2x.png in Resources */,
 				40A3A0EB1CEC9B3A0056016A /* more-filledBlack.png in Resources */,
 				14EC1956195B297F00B02AB6 /* sharedItem@2x.png in Resources */,
 				1487F226177C35AA004A1A5A /* folder_icon.png in Resources */,
@@ -4194,6 +4334,7 @@
 				1487F22E177C35AA004A1A5A /* movie_icon@2x~ipad.png in Resources */,
 				906414401D005B5C000AEFE5 /* file_new_server_version_available_icon@2x.png in Resources */,
 				405AD0C11B56C26A00271424 /* iphoneShare.png in Resources */,
+				17D20DB41DB0B1D5005ACAF0 /* device_pre@2x.png in Resources */,
 				1487F22F177C35AA004A1A5A /* movie_icon~ipad.png in Resources */,
 				1487F230177C35AA004A1A5A /* pdf_icon.png in Resources */,
 				1487F231177C35AA004A1A5A /* pdf_icon@2x.png in Resources */,
@@ -4204,6 +4345,7 @@
 				1487F236177C35AA004A1A5A /* sound_icon.png in Resources */,
 				1487F237177C35AA004A1A5A /* sound_icon@2x.png in Resources */,
 				1487F238177C35AA004A1A5A /* sound_icon@2x~ipad.png in Resources */,
+				17D20DB31DB0B1D5005ACAF0 /* check_ok@2x.png in Resources */,
 				EABD89191BBE82C400DA5281 /* NotificationButtonBackground.png in Resources */,
 				13A726C818B399EC00795A90 /* ownCloud-xmas.png in Resources */,
 				13A5ADB518883C77000EB617 /* CopyLinkShareiphone.png in Resources */,
@@ -4223,6 +4365,7 @@
 				1487F23F177C35AA004A1A5A /* TABsettings@2x.png in Resources */,
 				4052B4E21B4ECF35000788DA /* btnHelpPage3.png in Resources */,
 				1487F240177C35AA004A1A5A /* zip_icon.png in Resources */,
+				17D20DBC1DB0B1D5005ACAF0 /* unselect@3x.png in Resources */,
 				59EDC4301C611F9A0050939C /* btnHelpPage3@2x.png in Resources */,
 				14A7F79F18ED5781009AF347 /* presentation_icon.png in Resources */,
 				40AB1F691A123D0E003E7397 /* TABsettings@3x.png in Resources */,
@@ -4231,6 +4374,7 @@
 				1487F242177C35AA004A1A5A /* zip_icon@2x~ipad.png in Resources */,
 				1487F243177C35AA004A1A5A /* zip_icon~ipad.png in Resources */,
 				906414411D005B5C000AEFE5 /* FileDownloadedIcon.png in Resources */,
+				17D20DB71DB0B1D5005ACAF0 /* scan_br@2x.png in Resources */,
 				EABD88CA1BBE638300DA5281 /* ShareLoadingCell.xib in Resources */,
 				1487F244177C35AA004A1A5A /* CredentialsError.png in Resources */,
 				EA42FA5B180C13710006DB7C /* cancel_download_white@2x.png in Resources */,
@@ -4363,6 +4507,7 @@
 				1487F293177C35AA004A1A5A /* movieOverlay.png in Resources */,
 				1487F294177C35AA004A1A5A /* movieOverlay@2x.png in Resources */,
 				13A5ADB318883C77000EB617 /* CopyLinkShareipad.png in Resources */,
+				17D20DB91DB0B1D5005ACAF0 /* scan_tl@2x.png in Resources */,
 				EA2B4FB017FAFF69001766BB /* company_empty_screen_ipad.png in Resources */,
 				4052B4E11B4ECF35000788DA /* btnHelpPage2.png in Resources */,
 				906414421D005B5C000AEFE5 /* FileDownloadedIcon@2x.png in Resources */,
@@ -4388,6 +4533,7 @@
 				4007876D1C44EAEE00486A26 /* ShareEditUserViewController.xib in Resources */,
 				14CB98AA19657B7700F6FF4E /* folder-public@2x.png in Resources */,
 				4052B4DC1B4ECD74000788DA /* btnHelpPage1.png in Resources */,
+				17D20DBA1DB0B1D5005ACAF0 /* scan_tr@2x.png in Resources */,
 				906414331D004719000AEFE5 /* available_offline_TB-filled.png in Resources */,
 				4016E5C51A0CE9410022163C /* MainAppIcon_76_76@3x.png in Resources */,
 				EA123C781C58E9C500926398 /* MainAppIcon_167-167.png in Resources */,
@@ -4399,6 +4545,7 @@
 				13AA2C9B17D8AFCB00DB5E11 /* tabBar.png in Resources */,
 				906414311D004719000AEFE5 /* available_offline_TB@2x.png in Resources */,
 				40CF2C6C1C491C610047969A /* ShareUserPrivilegeCell.xib in Resources */,
+				17D20DB51DB0B1D5005ACAF0 /* flashlight@2x.png in Resources */,
 				149D98C1195AAD54005E0C73 /* fileSharedByLink.png in Resources */,
 				13AA2C9C17D8AFCB00DB5E11 /* tabBar@2x.png in Resources */,
 				593D14891C60BE1E005161E2 /* SplashImage.png in Resources */,
@@ -4695,6 +4842,7 @@
 				1324298D15ADBB3700DF823E /* AppDelegate.m in Sources */,
 				148DD5B51778436A00FB9977 /* UIColor+Constants.m in Sources */,
 				59EC94E81BBAA0210085190F /* FolderSyncDto.m in Sources */,
+				17D20DBF1DB0D2E3005ACAF0 /* DeviceSettingViewController.m in Sources */,
 				148DD5C2177850B100FB9977 /* CustomCellFileAndDirectory.m in Sources */,
 				905B3D3B1C8867AA00BCC93B /* SortManager.m in Sources */,
 				59C71D1D1A9216AE00F66166 /* ReaderThumbQueue.m in Sources */,
@@ -4710,6 +4858,7 @@
 				148DD5FD1778556500FB9977 /* MBProgressHUD.m in Sources */,
 				EAC5985A1A56A150003192B2 /* ProvidingFileDto.m in Sources */,
 				400A63641B4FD75600890579 /* IFTTTAlphaAnimation.m in Sources */,
+				17D20DA61DB08857005ACAF0 /* InputDeviceIDViewController.m in Sources */,
 				59C71D161A9216AE00F66166 /* ReaderContentView.m in Sources */,
 				148DD612177855B600FB9977 /* AuthenticationDbService.m in Sources */,
 				EA0599931BB94F3F002C2864 /* ShareSearchUserViewController.m in Sources */,
@@ -4721,6 +4870,7 @@
 				148DD613177855B600FB9977 /* AuthenticationResponseTypeCodeTask.m in Sources */,
 				148DD614177855B600FB9977 /* RetrieveAccessTokenTask.m in Sources */,
 				59C71D171A9216AE00F66166 /* ReaderDocument.m in Sources */,
+				1758213F1DAF30C700736D41 /* Device.m in Sources */,
 				148DD615177855B600FB9977 /* RetrieveDataResponseTypeCodeTask.m in Sources */,
 				400A636C1B4FD75600890579 /* IFTTTCornerRadiusAnimation.m in Sources */,
 				148DD616177855B600FB9977 /* RetrieveRefreshAndAccessTokenTask.m in Sources */,
@@ -4739,6 +4889,7 @@
 				596C060B1CF47278004BCF51 /* ELCAssetTablePicker.m in Sources */,
 				13D6B7CA18855EE40090A96C /* AppsActivityProvider.m in Sources */,
 				148DD63417785DF900FB9977 /* OfficeFileView.m in Sources */,
+				175821401DAF30C700736D41 /* DeviceManager.m in Sources */,
 				400A63721B4FD75600890579 /* IFTTTInterpolatable.m in Sources */,
 				148DD63817785E2200FB9977 /* UploadFromOtherAppViewController.m in Sources */,
 				148DD6691778627200FB9977 /* Download.m in Sources */,
@@ -4746,9 +4897,11 @@
 				400A63771B4FD75600890579 /* IFTTTShapeLayerAnimation.m in Sources */,
 				EA42FA4B18041E2F0006DB7C /* PassthroughView.m in Sources */,
 				59C71D151A9216AE00F66166 /* ReaderContentTile.m in Sources */,
+				17D20D971DB0844B005ACAF0 /* GCDAsyncUdpSocket.m in Sources */,
 				EA68969917F9AC860033B3C1 /* OCPortraitNavigationViewController.m in Sources */,
 				148DD686177862B600FB9977 /* PrepareFilesToUpload.m in Sources */,
 				148DD68C1778660200FB9977 /* DeleteFile.m in Sources */,
+				17D20DA71DB08857005ACAF0 /* ScanViewController.m in Sources */,
 				EA0EFA1B1BEA66A1009971AF /* CapabilitiesDto.m in Sources */,
 				EAF721801AAF3325009F5596 /* Managers.swift in Sources */,
 				59C71D191A9216AE00F66166 /* ReaderMainPagebar.m in Sources */,
@@ -4835,6 +4988,7 @@
 				EA0EFA1F1BEA6C6E009971AF /* ManageCapabilitiesDB.m in Sources */,
 				148DD6FE17786BF200FB9977 /* FileNameUtils.m in Sources */,
 				400A63741B4FD75600890579 /* IFTTTRotationAnimation.m in Sources */,
+				17D20DA41DB08857005ACAF0 /* DeviceChooseViewController.m in Sources */,
 				400A637C1B4FD75600890579 /* IFTTTTranslationAnimation.m in Sources */,
 				59C71D201A9216AE00F66166 /* ReaderThumbsView.m in Sources */,
 				40FF874319F81396008B7C62 /* OCKeychain.m in Sources */,
@@ -4867,6 +5021,7 @@
 				400A63761B4FD75600890579 /* IFTTTScrollViewPageConstraintAnimation.m in Sources */,
 				EAD281BC1A38BB2E00A00D54 /* DPDownload.m in Sources */,
 				1428F675178422AE0092F42A /* UploadsOfflineDto.m in Sources */,
+				17D20DA31DB08857005ACAF0 /* AddDeviceViewController.m in Sources */,
 				EA1787AC17E33BB9005171AB /* OCNavigationController.m in Sources */,
 				596C060C1CF47278004BCF51 /* ELCConsole.m in Sources */,
 				EA1762A01B78B50100D36186 /* ShareMainViewController.m in Sources */,
@@ -4880,6 +5035,7 @@
 				EA0599851BB92B19002C2864 /* ShareUserCell.swift in Sources */,
 				EA42FA51180539E70006DB7C /* ImageUtils.m in Sources */,
 				EABF68D61889339200A2217C /* SharedViewController.m in Sources */,
+				17D20D961DB0844B005ACAF0 /* GCDAsyncSocket.m in Sources */,
 				59C71D131A9216AE00F66166 /* ReaderConstants.m in Sources */,
 				148BEA62178C01C300696246 /* FailedUploadCell.m in Sources */,
 				EAF33C891C2AF5EE003A5AA2 /* ManageThumbnails.m in Sources */,
@@ -4909,6 +5065,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17B2E4C61DBE1422002A983D /* DeviceManager.m in Sources */,
+				17B2E4C71DBE1422002A983D /* Device.m in Sources */,
+				17E98AF41DB6133100A422C8 /* GCDAsyncSocket.m in Sources */,
+				17E98AF51DB6133100A422C8 /* GCDAsyncUdpSocket.m in Sources */,
 				59F123E61C89C14D0094CF70 /* SWUtilityButtonTapGestureRecognizer.m in Sources */,
 				59F123E41C89C1250094CF70 /* SWCellScrollView.m in Sources */,
 				59F123E51C89C1250094CF70 /* SWLongPressGestureRecognizer.m in Sources */,
@@ -4972,6 +5132,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17B92E401DC0884100D9F49A /* GCDAsyncSocket.m in Sources */,
+				17B92E411DC0884100D9F49A /* GCDAsyncUdpSocket.m in Sources */,
+				17B92E3A1DC087D600D9F49A /* DeviceManager.m in Sources */,
+				17B92E3B1DC087D600D9F49A /* Device.m in Sources */,
 				90D608FA1C89844E0049CCE4 /* SortManager.m in Sources */,
 				905C59501C50DA680051D223 /* ManageTouchID.m in Sources */,
 				59DF586D1B04B35B00EEFA84 /* Managers.swift in Sources */,
@@ -5041,6 +5205,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17B92E3E1DC0880000D9F49A /* GCDAsyncSocket.m in Sources */,
+				17B92E3F1DC0880000D9F49A /* GCDAsyncUdpSocket.m in Sources */,
+				17B92E3C1DC087E400D9F49A /* DeviceManager.m in Sources */,
+				17B92E3D1DC087E400D9F49A /* Device.m in Sources */,
 				59F123DD1C89AEE20094CF70 /* ManageThumbnails.m in Sources */,
 				59BF57CB1B04C8E7000EB221 /* Managers.swift in Sources */,
 				EAE80E241A6CFDE50061BD86 /* UploadsOfflineDto.m in Sources */,
@@ -5311,10 +5479,12 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5935J43UU8;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Owncloud iOs Client/Owncloud iOs Client-Prefix.pch";
@@ -5337,7 +5507,7 @@
 					"$(SRCROOT)",
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = com.owncloud.iOSmobileapp;
+				PRODUCT_BUNDLE_IDENTIFIER = io.whisper.owncloud.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -5362,10 +5532,12 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5935J43UU8;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Owncloud iOs Client/Owncloud iOs Client-Prefix.pch";
@@ -5383,7 +5555,7 @@
 					"$(SRCROOT)",
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = com.owncloud.iOSmobileapp;
+				PRODUCT_BUNDLE_IDENTIFIER = io.whisper.owncloud.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -5420,7 +5592,7 @@
 					XCTest,
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.owncloud.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.whisper.owncloud.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
@@ -5450,7 +5622,7 @@
 					XCTest,
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.owncloud.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.whisper.owncloud.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
@@ -5468,7 +5640,12 @@
 				CODE_SIGN_ENTITLEMENTS = "OC Share Sheet/OC Share Sheet.entitlements";
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 5935J43UU8;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PREFIX_HEADER = "Owncloud iOs Client/Owncloud iOs Client-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -5493,7 +5670,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_SWIFT_FLAGS = "-D DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.owncloud.iOSmobileapp.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.whisper.owncloud.app.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
@@ -5515,8 +5692,13 @@
 				CODE_SIGN_ENTITLEMENTS = "OC Share Sheet/OC Share Sheet.entitlements";
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 5935J43UU8;
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PREFIX_HEADER = "Owncloud iOs Client/Owncloud iOs Client-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "SHARE_IN=1";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -5537,7 +5719,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_SWIFT_FLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.owncloud.iOSmobileapp.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.whisper.owncloud.app.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
@@ -5565,11 +5747,13 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5935J43UU8;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PREFIX_HEADER = "Owncloud iOs Client/Owncloud iOs Client-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -5600,7 +5784,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-Obj-C";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.owncloud.iOSmobileapp.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.whisper.owncloud.app.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
@@ -5628,12 +5812,14 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5935J43UU8;
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PREFIX_HEADER = "Owncloud iOs Client/Owncloud iOs Client-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "FILE_PICKER=1";
@@ -5658,7 +5844,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "-Obj-C";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.owncloud.iOSmobileapp.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.whisper.owncloud.app.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
@@ -5687,8 +5873,13 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5935J43UU8;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PREFIX_HEADER = "Owncloud iOs Client/Owncloud iOs Client-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -5715,7 +5906,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.owncloud.iOSmobileapp.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.whisper.owncloud.app.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
@@ -5744,9 +5935,14 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5935J43UU8;
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PREFIX_HEADER = "Owncloud iOs Client/Owncloud iOs Client-Prefix.pch";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -5767,7 +5963,7 @@
 					"$(PROJECT_DIR)",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.owncloud.iOSmobileapp.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.whisper.owncloud.app.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;

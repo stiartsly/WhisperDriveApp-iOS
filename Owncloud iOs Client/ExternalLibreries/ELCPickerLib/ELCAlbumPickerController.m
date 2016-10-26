@@ -383,27 +383,23 @@ static CGSize const kAlbumThumbnailSize1 = {70.0f , 70.0f};
 #pragma mark Select Folder Navigation Delegate Methods
 - (void)folderSelected:(NSString*)folder{
     
-    AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    DLog(@"Change Folder : %@", folder);
     
-    DLog(@"Change Folder");
     //TODO. Change current Remote Folder
     self.currentRemoteFolder=folder;
     
-    NSArray *splitedUrl = [folder componentsSeparatedByString:@"/"];
-    // int cont = [splitedUrl count];
-    NSString *folderName = [NSString stringWithFormat:@"%@",[splitedUrl objectAtIndex:([splitedUrl count]-2)]];
-    
-    folderName = [[NSString stringWithString:folderName] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    
-    DLog(@"Folder is:%@", folderName);
-    if ([self.currentRemoteFolder isEqualToString:[NSString stringWithFormat:@"%@%@", app.activeUser.url,k_url_webdav_server]]) {
+    if (self.currentRemoteFolder.length == 0) {
         NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
-        folderName=appName;
+        self.locationInfo = appName;
+    }
+    else {
+        NSArray *splitedUrl = [folder componentsSeparatedByString:@"/"];
+        NSString *folderName = [NSString stringWithFormat:@"%@",[splitedUrl objectAtIndex:([splitedUrl count]-2)]];
+        
+        self.locationInfo = [[NSString stringWithString:folderName] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     }
     
-    self.locationInfo=folderName;
-    
-    [_folderToUploadButton setTitle:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"location", nil), folderName]];
+    [_folderToUploadButton setTitle:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"location", nil), self.locationInfo]];
 }
 - (void)cancelFolderSelected{
     

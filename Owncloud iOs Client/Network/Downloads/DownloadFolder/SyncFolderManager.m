@@ -120,7 +120,7 @@ static float const kDelayAfterCancelAll = 3.0;
     FolderSyncDto *currentFolderSync = [self.dictOfFoldersToBeCheck objectForKey:idKey];
     
     FileDto *currentFolder = currentFolderSync.file;
-    currentFolder = [ManageFilesDB getFileDtoByFileName:currentFolder.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:currentFolder.filePath andUser:app.activeUser] andUser:app.activeUser];
+    currentFolder = [ManageFilesDB getFileDtoByFileName:currentFolder.fileName andFilePath:currentFolder.filePath andUser:app.activeUser];
     
     NSMutableArray *filesFromCurrentFolder = [ManageFilesDB getFilesByFileId:currentFolder.idFile];
 
@@ -218,10 +218,7 @@ static float const kDelayAfterCancelAll = 3.0;
                         //Change the filePath from the library to our format
                         for (FileDto *currentFile in directoryList) {
                             //Remove part of the item file path
-                            NSString *partToRemove = [UtilsUrls getRemovedPartOfFilePathAnd:app.activeUser];
-                            if([currentFile.filePath length] >= [partToRemove length]){
-                                currentFile.filePath = [currentFile.filePath substringFromIndex:[partToRemove length]];
-                            }
+                            currentFile.filePath = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:currentFile.filePath andUser:app.activeUser];
                         }
                         
                         for (int i = 0 ; i < directoryList.count ; i++) {

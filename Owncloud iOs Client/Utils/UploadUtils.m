@@ -87,14 +87,10 @@
     AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     //Obtain the remotePath: https://domain/(subfoldersServer)/k_url_webdav_server
     NSString *remoteFolder = [UtilsUrls getFullRemoteServerPathWithWebDav:app.activeUser];
-    //With the filePath obtain the folder name: A/
-    NSString *folderName= [UtilsUrls getFilePathOnDBByFilePathOnFileDto:file.filePath andUser:app.activeUser];
-    //Obtain the complete path: https://domain/(subfoldersServer)/k_url_webdav_server/(subfoldersDB)/
-    remoteFolder=[NSString stringWithFormat:@"%@%@",remoteFolder, folderName];
-    DLog(@"remote folder: %@",remoteFolder);
     
     //Post a notification to inform to the PreviewFileViewController class
-    NSString *pathFile= [NSString stringWithFormat:@"%@%@", remoteFolder,file.fileName];
+    NSString *pathFile= [NSString stringWithFormat:@"%@%@%@", remoteFolder, file.filePath, file.fileName];
+    DLog(@"remote path: %@", pathFile);
     [[NSNotificationCenter defaultCenter] postNotificationName:PreviewFileNotification object:pathFile];
 }
 
@@ -117,11 +113,7 @@
     
     UserDto *user = [ManageUsersDB getUserByIdUser:uploadsOfflineDto.userId];
     
-    NSString *partToRemoveOfPah = [UtilsUrls getFullRemoteServerPathWithWebDav:user];
-    
-    NSString *filePath = [uploadsOfflineDto.destinyFolder substringFromIndex:partToRemoveOfPah.length];
-    
-    FileDto *output = [ManageFilesDB getFileDtoByFileName:uploadsOfflineDto.uploadFileName andFilePath:filePath andUser:user];
+    FileDto *output = [ManageFilesDB getFileDtoByFileName:uploadsOfflineDto.uploadFileName andFilePath:uploadsOfflineDto.destinyFolder andUser:user];
     
     return output;
 }
@@ -138,9 +130,7 @@
 
 + (BOOL) moveFinishedUploadTempFileToLocalPathByUploadsOfflineDto:(UploadsOfflineDto *)currentUpload {
     
-    NSString *fullRemoteDestiny = [NSString stringWithFormat:@"%@%@",currentUpload.destinyFolder,currentUpload.uploadFileName];
-    
-    NSString *localDestiny = [UtilsUrls  getFileLocalSystemPathByFullPath:fullRemoteDestiny andUser:APP_DELEGATE.activeUser];
+    NSString *localDestiny = [UtilsUrls getLocalFolderByFilePath:currentUpload.destinyFolder andFileName:currentUpload.uploadFileName andUserDto:APP_DELEGATE.activeUser];
     
     return [UtilsFileSystem moveFileOnTheFileSystemFrom:currentUpload.originPath toDestiny:localDestiny];
 }

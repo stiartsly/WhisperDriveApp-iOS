@@ -38,22 +38,5 @@
     // Configure the view for the selected state
 }
 
--(IBAction)activeAccount:(id)sender {
-    
-    AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-    
-    //We check the connection here because we need to accept the certificate on the self signed server before go to the files tab
-    [[CheckAccessToServer sharedManager] isConnectionToTheServerByUrl:self.urlServer.text];
-    
-    //We delete the cookies on SAML
-    if (k_is_sso_active) {
-        app.activeUser.password = @"";
-        [ManageUsersDB updatePassword:app.activeUser];
-    }
-    
-    [self.delegate activeAccountByPosition:self.activeButton.tag];
-
-}
-
 
 @end

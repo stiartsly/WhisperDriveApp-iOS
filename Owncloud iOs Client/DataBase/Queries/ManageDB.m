@@ -48,7 +48,7 @@
         
         BOOL correctQuery=NO;
         
-        correctQuery = [db executeUpdate:@"CREATE TABLE IF NOT EXISTS 'users' ('id' INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , 'url' VARCHAR, 'ssl' BOOL, 'activeaccount' BOOL, 'storage_occupied' LONG NOT NULL DEFAULT 0, 'storage' LONG NOT NULL DEFAULT 0, 'has_share_api_support' INTEGER NOT NULL DEFAULT 0, 'has_sharee_api_support' INTEGER NOT NULL DEFAULT 0, 'has_cookies_support' INTEGER NOT NULL DEFAULT 0, 'has_forbidden_characters_support' INTEGER NOT NULL DEFAULT 0, 'has_capabilities_support' INTEGER NOT NULL DEFAULT 0, 'instant_upload' BOOL NOT NULL DEFAULT 0, 'background_instant_upload' BOOL NOT NULL DEFAULT 0, 'path_instant_upload' VARCHAR, 'only_wifi_instant_upload' BOOL NOT NULL DEFAULT 0, 'timestamp_last_instant_upload' DOUBLE, 'url_redirected' VARCHAR, 'sorting_type' INTEGER NOT NULL DEFAULT 0)"];
+        correctQuery = [db executeUpdate:@"CREATE TABLE IF NOT EXISTS 'users' ('id' INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , 'device_id' VARCHAR, 'url' VARCHAR, 'ssl' BOOL, 'activeaccount' BOOL, 'storage_occupied' LONG NOT NULL DEFAULT 0, 'storage' LONG NOT NULL DEFAULT 0, 'has_share_api_support' INTEGER NOT NULL DEFAULT 0, 'has_sharee_api_support' INTEGER NOT NULL DEFAULT 0, 'has_cookies_support' INTEGER NOT NULL DEFAULT 0, 'has_forbidden_characters_support' INTEGER NOT NULL DEFAULT 0, 'has_capabilities_support' INTEGER NOT NULL DEFAULT 0, 'instant_upload' BOOL NOT NULL DEFAULT 0, 'background_instant_upload' BOOL NOT NULL DEFAULT 0, 'path_instant_upload' VARCHAR, 'only_wifi_instant_upload' BOOL NOT NULL DEFAULT 0, 'timestamp_last_instant_upload' DOUBLE, 'url_redirected' VARCHAR, 'sorting_type' INTEGER NOT NULL DEFAULT 0)"];
         
         if (!correctQuery) {
             DLog(@"Error in createDataBase table users");
@@ -1082,6 +1082,32 @@
         }
         
     }];
+}
+
+///-----------------------------------
+/// @name Update Database version with 18 version to 19
+///-----------------------------------
+
+/**
+ * Changes:
+ *
+ * Alter users table, adds new field to store the server device id
+ *
+ */
++ (void) updateDBVersion18To19{
+    
+    FMDatabaseQueue *queue = Managers.sharedDatabase;
+    
+    [queue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        BOOL correctQuery=NO;
+        
+        correctQuery = [db executeUpdate:@"ALTER TABLE users ADD device_id VARCHAR"];
+        if (!correctQuery) {
+            DLog(@"Error update version 18 to 19 table users add column device_id");
+        }
+        
+    }];
+    
 }
 
 @end

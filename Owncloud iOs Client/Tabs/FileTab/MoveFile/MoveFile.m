@@ -42,8 +42,6 @@
 
 -(void) initMoveProcess {
 
-    AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-    
     //We init the ManageNetworkErrors
     if (!_manageNetworkErrors) {
         _manageNetworkErrors = [ManageNetworkErrors new];
@@ -52,13 +50,9 @@
     
     NSString *destinyPath = [_destinationFolder stringByAppendingString:_destinyFilename];
     NSString *originPath = [_selectedFileDto.filePath stringByAppendingString:_selectedFileDto.fileName];
-    //Remove the first character / to not duplicate it on the stringByAppendingString
-    originPath = [originPath substringFromIndex:1];
-    originPath = [NSString stringWithFormat:@"%@/%@", [UtilsUrls getRemoteServerPathWithoutFolders:app.activeUser], originPath];
     
     DLog(@"destinyPath: %@", destinyPath);
     DLog(@"originPath: %@", originPath);
-    
     
     if ([destinyPath isEqualToString:originPath]) {
         DLog(@"We have to move the folder to the same position so we do not do anything");
@@ -118,7 +112,7 @@
     AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     
     NSString *originFile = [UtilsUrls getFullRemoteServerFilePathByFile:self.selectedFileDto andUser:app.activeUser];
-    NSString *destinyFile = [NSString stringWithFormat:@"%@%@",self.destinationFolder, self.destinyFilename];
+    NSString *destinyFile = [NSString stringWithFormat:@"%@%@%@", [UtilsUrls getFullRemoteServerPathWithWebDav:app.activeUser], self.destinationFolder, self.destinyFilename];
     
     //We remove the URL Encoding
     originFile = [originFile stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -249,14 +243,12 @@
     
     //1. NewFilePath
     DLog(@"Destination path: %@", self.destinationFolder);
-    NSString *newFilePath = [UtilsUrls getFilePathOnDBByFullPath:self.destinationFolder andUser:app.activeUser];
-    DLog(@"FilePath: %@", newFilePath);
     
     //3.- NewFolderPath
-    NSString *newFolderPath = [UtilsDtos getDbFolderPathFromFilePath:newFilePath];
+    NSString *newFolderPath = [UtilsDtos getDbFolderPathFromFilePath:self.destinationFolder];
     
     //4.- NewFolderName
-    NSString *newFolderName = [UtilsDtos getDbFolderNameFromFilePath:newFilePath];
+    NSString *newFolderName = [UtilsDtos getDbFolderNameFromFilePath:self.destinationFolder];
     
     
     // FileDto *destinationFolderFileDto = [ExecuteManager getFolderByFilePath:newFilePath andFileName:self.selectedFileDto.fileName];
@@ -265,7 +257,7 @@
     
     DLog(@"self.selectedFileDto.filePath: %@", self.selectedFileDto.filePath);
     
-    self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.selectedFileDto.filePath andUser:app.activeUser] andUser:app.activeUser];
+    self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:self.selectedFileDto.filePath andUser:app.activeUser];
     
     DLog(@"self.selectedFileDto.id: %ld", (long) self.selectedFileDto.idFile);
     DLog(@"self.selectedFileDto.localFolder: %@", self.selectedFileDto.localFolder);
@@ -277,11 +269,11 @@
     //If the origin and the destiny is the same we do not do anything
     if(![destinyFolder isEqualToString:self.selectedFileDto.localFolder]) {
         //delete the old file because if it exist will be override
-        [ManageFilesDB deleteFileByFilePath:newFilePath andFileName:self.destinyFilename];
+        [ManageFilesDB deleteFileByFilePath:self.destinationFolder andFileName:self.destinyFilename];
         
         DLog(@"self.selectedFileDto.fileName: %@", self.destinyFilename);
         
-        [ManageFilesDB updateFolderOfFileDtoByNewFilePath:newFilePath andDestinationFileDto:destinationFolderFileDto andNewFileName:self.destinyFilename andFileDto:self.selectedFileDto];
+        [ManageFilesDB updateFolderOfFileDtoByNewFilePath:self.destinationFolder andDestinationFileDto:destinationFolderFileDto andNewFileName:self.destinyFilename andFileDto:self.selectedFileDto];
         
         //We move the file
         if(!self.selectedFileDto.isDirectory) {
@@ -300,10 +292,7 @@
     
     AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     
-    //Find the folder object with the same name
-    //Need the path and de name
-    NSString *newFilePath = [UtilsUrls getFilePathOnDBByFullPath:self.destinationFolder andUser:app.activeUser];
-    FileDto *destinationFolderDto = [ManageFilesDB getFolderByFilePath:newFilePath andFileName:_destinyFilename];
+    FileDto *destinationFolderDto = [ManageFilesDB getFolderByFilePath:self.destinationFolder andFileName:self.destinyFilename];
     
     //Delete de folder with the same name in DB
     [self deleteFolderChildsWithIdFile:destinationFolderDto.idFile];
@@ -311,7 +300,7 @@
     //Delete from filesystem
     NSError *error;
     
-    NSString *localFilePath = [UtilsUrls getLocalFolderByFilePath:[NSString stringWithFormat:@"%@%@", [UtilsUrls getRemovedPartOfFilePathAnd:app.activeUser], newFilePath] andFileName:_destinyFilename andUserDto:app.activeUser];
+    NSString *localFilePath = [UtilsUrls getLocalFolderByFilePath:self.destinationFolder andFileName:_destinyFilename andUserDto:app.activeUser];
     
     NSFileManager *fileMgr = [[NSFileManager alloc] init];
     [fileMgr removeItemAtPath:localFilePath error:&error];
@@ -326,14 +315,12 @@
     
     //1. NewFilePath
     DLog(@"Destination path: %@", self.destinationFolder);
-    NSString *newFilePath = [UtilsUrls getFilePathOnDBByFullPath:self.destinationFolder andUser:app.activeUser];
-    DLog(@"FolderPath: %@", newFilePath);
     
     
     //Root folder
     NSString *rootFilePath = @"";
     
-    if([newFilePath isEqualToString:rootFilePath]) {
+    if([self.destinationFolder isEqualToString:rootFilePath]) {
         //The destiny is the root folder
         
         DLog(@"MOVING THE FILE TO THE ROOT");
@@ -356,25 +343,15 @@
         
         
         //Divide the newpath by the "/"
-        NSArray *selectedFolderPathSplitted = [newFilePath componentsSeparatedByString:@"/"];
+        NSArray *selectedFolderPathSplitted = [self.destinationFolder componentsSeparatedByString:@"/"];
         
         
         NSString *destinationFolderPath = @"";
-        NSString *destinationFolderName = @"";
+        NSString *destinationFolderName = [NSString stringWithFormat:@"%@/",[selectedFolderPathSplitted objectAtIndex:([selectedFolderPathSplitted count]-2)]];
         
-        for (NSInteger i = ([selectedFolderPathSplitted count] -1) ; i < [selectedFolderPathSplitted count]; i++) {
-            
-            destinationFolderName = [NSString stringWithFormat:@"%@/",[selectedFolderPathSplitted objectAtIndex:(i-1)]];
-        }
         
-        DLog(@"newFilePath length: %lu",(unsigned long)[newFilePath length]);
-        DLog(@"foldername length: %lu",(unsigned long)[destinationFolderName length]);
-        
-        if ([newFilePath length]==[destinationFolderName length]) {
-            //The path is in the root
-            destinationFolderPath = @"";
-        }else{
-            destinationFolderPath = [NSString stringWithFormat:@"%@/",[newFilePath substringToIndex:[newFilePath length] - ([destinationFolderName length]+1)]];
+        if ([self.destinationFolder length] > [destinationFolderName length]) {
+            destinationFolderPath = [NSString stringWithFormat:@"%@/",[self.destinationFolder substringToIndex:[self.destinationFolder length] - ([destinationFolderName length]+1)]];
         }
         
         
@@ -383,30 +360,25 @@
         
         
         FileDto *destinationFolderDto = [ManageFilesDB getFolderByFilePath:destinationFolderPath andFileName:destinationFolderName];
-        self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.selectedFileDto.filePath andUser:app.activeUser] andUser:app.activeUser];
+        self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:self.selectedFileDto.filePath andUser:app.activeUser];
         
         DLog(@"MOVING THE FOLDER TO OTHER FOLDER");
         DLog(@"Old path: %@", self.selectedFileDto.filePath);
-        DLog(@"New path: %@", newFilePath);
+        DLog(@"New path: %@", self.destinationFolder);
         DLog(@"New file_id: %ld", (long)destinationFolderDto.idFile);
         DLog(@"File for where id: %ld", (long)self.selectedFileDto.idFile);
         
-        [ManageFilesDB updatePath:self.selectedFileDto.filePath withNew:newFilePath andFileId:destinationFolderDto.idFile andSelectedFileId:self.selectedFileDto.idFile andChangedFileName:_destinyFilename];
+        [ManageFilesDB updatePath:self.selectedFileDto.filePath withNew:self.destinationFolder andFileId:destinationFolderDto.idFile andSelectedFileId:self.selectedFileDto.idFile andChangedFileName:_destinyFilename];
     }
     
-    [self performSelector:@selector(moveSubFilesAndSubFoldersBy:) withObject:newFilePath afterDelay:1.0];
+    [self performSelector:@selector(moveSubFilesAndSubFoldersBy:) withObject:self.destinationFolder afterDelay:1.0];
     
 }
 
 - (void) moveSubFilesAndSubFoldersBy:(NSString *) newFilePath {
     
-    AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-    
-    NSString *oldFilePathWithServerPath = [NSString stringWithFormat:@"%@%@",self.selectedFileDto.filePath,self.selectedFileDto.fileName];
-    
     //0.- OldFilePath
-    DLog(@"OldFilePathWithServerPath: %@", oldFilePathWithServerPath);
-    NSString *oldFilePath= [UtilsUrls getFilePathOnDBByFilePathOnFileDto:oldFilePathWithServerPath andUser:app.activeUser];
+    NSString *oldFilePath = [NSString stringWithFormat:@"%@%@",self.selectedFileDto.filePath,self.selectedFileDto.fileName];
     DLog(@"OldFilePath: %@", oldFilePath);
     
     //1.- NewFolderPath
@@ -462,8 +434,7 @@
     //NSString *newLocalFolder= [[NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", currentUser.idUser]];
     NSString *newLocalFolder= [[UtilsUrls getOwnCloudFilePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"%ld", (long)app.activeUser.idUser]];
     
-    NSString *newStr = [UtilsUrls getFilePathOnDBByFullPath:self.destinationFolder andUser:app.activeUser];
-    newLocalFolder = [NSString stringWithFormat:@"%@/%@%@", newLocalFolder,[newStr stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding],[_destinyFilename stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    newLocalFolder = [NSString stringWithFormat:@"%@/%@%@", newLocalFolder, [self.destinationFolder stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding],[_destinyFilename stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     
     return newLocalFolder;
 }
@@ -547,9 +518,7 @@
     //Obtain the file that the user wants overwrite
     FileDto *file = nil;
     
-    NSString *newFilePath = [UtilsUrls getFilePathOnDBByFullPath:self.destinationFolder andUser:app.activeUser];
-    
-    file = [ManageFilesDB getFileDtoByFileName:_destinyFilename andFilePath:newFilePath andUser:app.activeUser];
+    file = [ManageFilesDB getFileDtoByFileName:self.destinyFilename andFilePath:self.destinationFolder andUser:app.activeUser];
     
     //Check if this file is being updated and cancel it
     Download *downloadFile;

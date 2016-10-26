@@ -162,7 +162,7 @@
  */
 + (CustomCellFileAndDirectory *) getTheStatusIconOntheFile: (FileDto *)fileForSetTheStatusIcon onTheCell: (CustomCellFileAndDirectory *)fileCell andCurrentFolder:(FileDto *)currentFolder andIsSonOfFavoriteFolder:(BOOL)isCurrentFolderSonOfFavoriteFolder ofUser:(UserDto *)user {
     
-    NSString *path = [NSString stringWithFormat:@"/%@%@", [UtilsUrls getFilePathOnDBByFilePathOnFileDto:fileForSetTheStatusIcon.filePath andUser:user], fileForSetTheStatusIcon.fileName];
+    NSString *path = [NSString stringWithFormat:@"/%@%@", fileForSetTheStatusIcon.filePath, fileForSetTheStatusIcon.fileName];
     
     NSMutableArray *allShares = [ManageSharesDB getSharesByUser:user.idUser andPath:path];
     NSInteger numberOfShares = allShares.count;
@@ -324,7 +324,7 @@
             
             [sharedCommunication setUserAgent:[UtilsUrls getUserAgent]];
             
-            NSString *path = [UtilsUrls getFilePathOnDBWithFileName:file.fileName ByFilePathOnFileDto:file.filePath andUser:user];
+            NSString *path = [NSString stringWithFormat:@"%@%@", file.filePath, file.fileName];
             path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             
             thumbnailSessionTask = [sharedCommunication getRemoteThumbnailByServer:user.url ofFilePath:path withWidth:k_thumbnails_width andHeight:k_thumbnails_height onCommunication:sharedCommunication successRequest:^(NSHTTPURLResponse *response, NSData *thumbnail, NSString *redirectedServer) {

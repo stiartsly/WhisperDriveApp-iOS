@@ -44,6 +44,7 @@
     [[AppDelegate sharedOCCommunication] setUserAgent:[UtilsUrls getUserAgent]];
     
     //FileName full path
+    path = [NSString stringWithFormat:@"%@%@", [UtilsUrls getFullRemoteServerPathWithWebDav:user], path];
     path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     DLog(@"Path to check: %@", path);
     

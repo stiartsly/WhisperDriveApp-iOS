@@ -14,7 +14,46 @@
  */
 
 #import "UserDto.h"
+#import "DeviceManager.h"
 
 @implementation UserDto
+
+- (NSString *)url {
+    if (_deviceID) {
+        for (Device *device in [DeviceManager sharedManager].devices) {
+            if ([device.deviceID isEqualToString:_deviceID]) {
+                if (device.localPort) {
+                    if (_ssl) {
+                        return [NSString stringWithFormat:@"https://localhost:%d/owncloud/", device.localPort];
+                    }
+                    else {
+                        return [NSString stringWithFormat:@"http://localhost:%d/owncloud/", device.localPort];
+                    }
+                }
+                else if (device.status == ECSDeviceEventOnline) {
+                    [device connect];
+                }
+                break;
+            }
+        }
+        
+        return @"";
+    }
+    else {
+        return _url;
+    }
+}
+
+- (NSString *)deviceName {
+    if (_deviceID) {
+        for (Device *device in [DeviceManager sharedManager].devices) {
+            if ([device.deviceID isEqualToString:_deviceID]) {
+                return device.deviceName;
+            }
+        }
+    }
+    
+    return nil;
+}
 
 @end

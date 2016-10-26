@@ -72,7 +72,7 @@ NSString * fileWasDownloadNotification = @"fileWasDownloadNotification";
     AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     
     //Get file object
-    file = [ManageFilesDB getFileDtoByFileName:file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:file.filePath andUser:app.activeUser] andUser:app.activeUser];
+    file = [ManageFilesDB getFileDtoByFileName:file.fileName andFilePath:file.filePath andUser:app.activeUser];
     _fileDto=file;
     
     //Get the etag
@@ -91,9 +91,7 @@ NSString * fileWasDownloadNotification = @"fileWasDownloadNotification";
     
     AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     //Get url path of server
-    NSArray *splitedUrl = [[UtilsUrls getFullRemoteServerPath:app.activeUser] componentsSeparatedByString:@"/"];
-    NSString *serverUrl = [NSString stringWithFormat:@"%@%@%@",[NSString stringWithFormat:@"%@/%@/%@",[splitedUrl objectAtIndex:0],[splitedUrl objectAtIndex:1],[splitedUrl objectAtIndex:2]], _fileDto.filePath, _fileDto.fileName];
-        
+    NSString *serverUrl = [UtilsUrls getFullRemoteServerFilePathByFile:_fileDto andUser:app.activeUser];
     serverUrl = [serverUrl stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     //get local path of server
@@ -296,7 +294,7 @@ NSString * fileWasDownloadNotification = @"fileWasDownloadNotification";
     }
     
     //Update the datas of the new file
-    _fileDto = [ManageFilesDB getFileDtoByFileName:_fileDto.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_fileDto.filePath andUser:app.activeUser] andUser:app.activeUser];
+    _fileDto = [ManageFilesDB getFileDtoByFileName:_fileDto.fileName andFilePath:_fileDto.filePath andUser:app.activeUser];
     
     //Set file status like downloaded in Data Base
     [ManageFilesDB setFileIsDownloadState:_fileDto.idFile andState:downloaded];
@@ -360,7 +358,7 @@ NSString * fileWasDownloadNotification = @"fileWasDownloadNotification";
         }
         
         //Get FileDto
-        _fileDto = [ManageFilesDB getFileDtoByFileName:_fileDto.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_fileDto.filePath andUser:self.user] andUser:self.user];
+        _fileDto = [ManageFilesDB getFileDtoByFileName:_fileDto.fileName andFilePath:_fileDto.filePath andUser:self.user];
         
         //If is downloaded or not
         if ([_fileDto isDownload] == downloaded && !_fileDto.isNecessaryUpdate) {
@@ -548,7 +546,7 @@ NSString * fileWasDownloadNotification = @"fileWasDownloadNotification";
     
     //FileName full path
     NSString *serverPath = [UtilsUrls getFullRemoteServerPathWithWebDav:app.activeUser];
-    NSString *path = [NSString stringWithFormat:@"%@%@%@",serverPath, [UtilsUrls getFilePathOnDBByFilePathOnFileDto:_fileDto.filePath andUser:app.activeUser], _fileDto.fileName];
+    NSString *path = [NSString stringWithFormat:@"%@%@%@",serverPath, _fileDto.filePath, _fileDto.fileName];
     
     path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
@@ -584,10 +582,7 @@ NSString * fileWasDownloadNotification = @"fileWasDownloadNotification";
             //Change the filePath from the library to our format
             for (FileDto *currentFile in items) {
                 //Remove part of the item file path
-                NSString *partToRemove = [UtilsUrls getRemovedPartOfFilePathAnd:app.activeUser];
-                if([currentFile.filePath length] >= [partToRemove length]){
-                    currentFile.filePath = [currentFile.filePath substringFromIndex:[partToRemove length]];
-                }
+                currentFile.filePath = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:currentFile.filePath andUser:app.activeUser];
             }
             
             DLog(@"The directory List have: %lu elements", (unsigned long)items.count);

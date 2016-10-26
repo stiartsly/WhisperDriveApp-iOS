@@ -233,7 +233,7 @@
     
     [self dismissViewControllerAnimated:YES completion:nil];
     
-    NSString *remotePath = [UtilsUrls getFullRemoteServerFilePathByFile:self.currentFolder andUser:self.user];
+    NSString *remotePath = [self.currentFolder.filePath stringByAppendingString:self.currentFolder.fileName];
     
     [(SelectFolderNavigation*)self.parent selectFolder:remotePath];
 
@@ -355,7 +355,6 @@
             NSString *remotePath = [UtilsUrls getFullRemoteServerFilePathByFile:self.currentFolder andUser:self.user];
 
             NSString *newURL = [NSString stringWithFormat:@"%@%@",remotePath,[name encodeString:NSUTF8StringEncoding]];
-            NSString *rootPath = [UtilsUrls getFilePathOnDBByFullPath:newURL andUser:self.user];
             
             //Set the right credentials
             if (k_is_sso_active) {

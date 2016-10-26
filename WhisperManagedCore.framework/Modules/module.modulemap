@@ -1,0 +1,6 @@
+framework module WhisperManagedCore {
+  umbrella header "WhisperManagedCore.h"
+
+  export *
+  module * { export * }
+}

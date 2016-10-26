@@ -31,6 +31,8 @@ typedef enum {
 @interface UserDto : NSObject
 
 @property NSInteger idUser;
+@property (nonatomic, copy) NSString *deviceID;
+@property (nonatomic, readonly) NSString *deviceName;
 @property (nonatomic, copy) NSString *url;
 @property (nonatomic, copy) NSString *username;
 @property (nonatomic, copy) NSString *password;

@@ -786,9 +786,6 @@
         }
     }
     
-    accountCell.delegate = self;
-    [accountCell.activeButton setTag:row];
-    
     accountCell.selectionStyle = UITableViewCellSelectionStyleNone;
     accountCell.userName.text = userAccout.username;
     
@@ -797,7 +794,7 @@
         accountCell.userName.text = [accountCell.userName.text stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     }
     
-    accountCell.urlServer.text = userAccout.url;
+    accountCell.urlServer.text = userAccout.deviceID ? userAccout.deviceName : userAccout.url;
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     [accountCell.menuButton setTag:row];
     [accountCell.menuButton setImage:[UIImage imageNamed:@"more-filledBlack.png"] forState:UIControlStateNormal];
@@ -1045,21 +1042,22 @@
 - (void) didPressOnAccountIndexPath:(NSIndexPath*)indexPath {
     
     AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-    app.userSessionCurrentToken = nil;
+    UserDto *selectedUser = (UserDto *)[self.listUsers objectAtIndex:indexPath.row];
     
-    //Method to change the account
-    AccountCell *cell = (AccountCell *) [self.settingsTableView cellForRowAtIndexPath:indexPath];
-    [cell activeAccount:nil];
-}
-
-#pragma mark - AccountCell Delegate Methods
-
--(void)activeAccountByPosition:(NSInteger)position {
-    
-    AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-    UserDto *selectedUser = (UserDto *)[self.listUsers objectAtIndex:position];
-    
+    //change the account
     if (app.activeUser.idUser != selectedUser.idUser) {
+        
+        //We check the connection here because we need to accept the certificate on the self signed server before go to the files tab
+        [[CheckAccessToServer sharedManager] isConnectionToTheServerByUrl:selectedUser.url];
+        
+        app.userSessionCurrentToken = nil;
+        
+        //We delete the cookies on SAML
+        if (k_is_sso_active) {
+            app.activeUser.password = @"";
+            [ManageUsersDB updatePassword:app.activeUser];
+        }
+        
         //Cancel downloads of the previous user
     
         [[OCLoadingSpinner sharedOCLoadingSpinner] initLoadingForViewController: self];
@@ -1683,7 +1681,9 @@
 - (void)showMenuAccountOptions:(UIButton *)sender {
 
     self.selectedUserAccount = [self.listUsers objectAtIndex:sender.tag];
-    NSString *titleMenu = [NSString stringWithFormat:@"%@@%@",self.selectedUserAccount .username,self.selectedUserAccount .url];
+    NSString *titleMenu = [NSString stringWithFormat:@"%@@%@",
+                           self.selectedUserAccount.username,
+                           self.selectedUserAccount.deviceID ? self.selectedUserAccount.deviceName : self.selectedUserAccount.url];
     
     if (self.menuAccountActionSheet) {
         self.menuAccountActionSheet = nil;

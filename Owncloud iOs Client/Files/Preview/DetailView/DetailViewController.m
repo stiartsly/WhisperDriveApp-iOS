@@ -251,11 +251,11 @@
         _controllerManager = controller;
         _file = nil;
     } else {
-        _file = [ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_file.filePath andUser:app.activeUser] andUser:app.activeUser];
+        _file = [ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:_file.filePath andUser:app.activeUser];
     }
     
     //Get the current local folder
-    _currentLocalFolder = [NSString stringWithFormat:@"%@%ld/%@", [UtilsUrls getOwnCloudFilePath],(long)app.activeUser.idUser, [UtilsUrls getFilePathOnDBByFilePathOnFileDto:myFile.filePath andUser:app.activeUser]];
+    _currentLocalFolder = [NSString stringWithFormat:@"%@%ld/%@", [UtilsUrls getOwnCloudFilePath], (long)app.activeUser.idUser, myFile.filePath];
     _currentLocalFolder = [_currentLocalFolder stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
     //Quit the title
@@ -474,7 +474,7 @@
 - (void)openFile {
     AppDelegate *app = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     
-    self.file = [ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_file.filePath andUser:app.activeUser] andUser:app.activeUser];
+    self.file = [ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:_file.filePath andUser:app.activeUser];
     
     
     if (!self.openWith) {
@@ -551,7 +551,7 @@
     AppDelegate *app = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     _isUpdatingFile = isUpdatingProcess;
     //Update the file
-    _file = [ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_file.filePath andUser:app.activeUser] andUser:app.activeUser];
+    _file = [ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:_file.filePath andUser:app.activeUser];
     
     //Quit the gallery view
     if (_galleryView) {
@@ -1017,7 +1017,7 @@
 - (IBAction)didPressFavoritesButton:(id)sender {
     //Update the file from the DB
     AppDelegate *app = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    _file = [ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_file.filePath andUser:app.activeUser] andUser:app.activeUser];
+    _file = [ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:_file.filePath andUser:app.activeUser];
     
     if ([DownloadUtils isSonOfFavoriteFolder:self.file]) {
         [self showAlertView:NSLocalizedString(@"parent_folder_is_available_offline_file_child", nil)];
@@ -1096,7 +1096,7 @@
         AppDelegate *app = (AppDelegate*)[[UIApplication sharedApplication] delegate];
         
         //Update the file
-        _file = [ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_file.filePath andUser:app.activeUser] andUser:app.activeUser];
+        _file = [ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:_file.filePath andUser:app.activeUser];
         
         DLog(@"idFile: %ld", (long)_file.idFile);
         
@@ -1378,7 +1378,7 @@
             
             AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
             
-            _file = [ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_file.filePath andUser:app.activeUser] andUser:app.activeUser];
+            _file = [ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:_file.filePath andUser:app.activeUser];
             
             [self downloadTheFile];
             
@@ -1497,7 +1497,7 @@
    
     //Update fileDto
     AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-    _file = [ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_file.filePath andUser:app.activeUser] andUser:app.activeUser];
+    _file = [ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:_file.filePath andUser:app.activeUser];
     
     //Only if the file is the same
      if ([fileDto.localFolder isEqualToString: _file.localFolder]) {
@@ -1834,7 +1834,7 @@
     AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     
     //Update the _file with DB
-    _file=[ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_file.filePath andUser:app.activeUser] andUser:app.activeUser];
+    _file=[ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:_file.filePath andUser:app.activeUser];
     
     NSString *path = (NSString*)[notification object];
     NSString *pathPreview = [UtilsUrls getFullRemoteServerFilePathByFile:self.file andUser:app.activeUser];
@@ -1856,7 +1856,7 @@
     
     AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     //Update the preview file with the new information in DB
-    _file=[ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_file.filePath andUser:app.activeUser] andUser:app.activeUser];
+    _file=[ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:_file.filePath andUser:app.activeUser];
     app.isOverwriteProcess = NO;
 }
 
@@ -1869,7 +1869,7 @@
     AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     
     //Update the file with the new information in DB
-    _file=[ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_file.filePath andUser:app.activeUser] andUser:app.activeUser];
+    _file=[ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:_file.filePath andUser:app.activeUser];
     DLog(@"file id: %ld",(long)_file.idFile);
 
     
@@ -2389,7 +2389,7 @@
         //Set the file as isNecessaryUpdate
         [ManageFilesDB setIsNecessaryUpdateOfTheFile:_file.idFile];
         //Update the file on memory
-        _file = [ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_file.filePath andUser:app.activeUser] andUser:app.activeUser];
+        _file = [ManageFilesDB getFileDtoByFileName:_file.fileName andFilePath:_file.filePath andUser:app.activeUser];
         [self reloadFileList];
         [self manageTheSameFileOnThePreview];
     }

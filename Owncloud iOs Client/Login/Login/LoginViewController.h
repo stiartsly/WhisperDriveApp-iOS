@@ -90,7 +90,7 @@ extern NSString *loginViewControllerRotate;
 -(void)hideOrShowPassword;
 -(void)goTryToDoLogin;
 -(void)badCertificateNoAcceptedByUser;
--(NSString *)getUrlChecked:(NSString *)byUrl;
+-(NSString *)getUrl;
 -(void) hideTryingToLogin;
 -(void) potraitViewiPhone;
 -(void) addEditAccountsViewiPad;

@@ -65,7 +65,7 @@
             
             currentFile.idFile = [rs intForColumn:@"id"];
             currentFile.ocId = [rs stringForColumn:@"oc_id"];
-            currentFile.filePath = [NSString stringWithFormat:@"%@%@",[UtilsUrls getRemovedPartOfFilePathAnd:mUser],[rs stringForColumn:@"file_path"]];
+            currentFile.filePath = [rs stringForColumn:@"file_path"];
             currentFile.fileName = [rs stringForColumn:@"file_name"];
             currentFile.isDirectory = [rs intForColumn:@"is_directory"];
             currentFile.userId = [rs intForColumn:@"user_id"];
@@ -119,7 +119,7 @@
             
             currentFile.idFile = [rs intForColumn:@"id"];
             currentFile.ocId = [rs stringForColumn:@"oc_id"];
-            currentFile.filePath = [NSString stringWithFormat:@"%@%@",[UtilsUrls getRemovedPartOfFilePathAnd:mUser],[rs stringForColumn:@"file_path"]];
+            currentFile.filePath = [rs stringForColumn:@"file_path"];
             currentFile.fileName = [rs stringForColumn:@"file_name"];
             currentFile.isDirectory = [rs intForColumn:@"is_directory"];
             currentFile.userId = [rs intForColumn:@"user_id"];
@@ -173,7 +173,7 @@
             
             currentFile.idFile = [rs intForColumn:@"id"];
             currentFile.ocId = [rs stringForColumn:@"oc_id"];
-            currentFile.filePath = [NSString stringWithFormat:@"%@%@",[UtilsUrls getRemovedPartOfFilePathAnd:mUser],[rs stringForColumn:@"file_path"]];
+            currentFile.filePath = [rs stringForColumn:@"file_path"];
             currentFile.fileName = [rs stringForColumn:@"file_name"];
             currentFile.isDirectory = [rs intForColumn:@"is_directory"];
             currentFile.userId = [rs intForColumn:@"user_id"];
@@ -219,7 +219,7 @@
             
             output.idFile = [rs intForColumn:@"id"];
             output.ocId = [rs stringForColumn:@"oc_id"];
-            output.filePath = [NSString stringWithFormat:@"%@%@",[UtilsUrls getRemovedPartOfFilePathAnd:mUser],[rs stringForColumn:@"file_path"]];
+            output.filePath = [rs stringForColumn:@"file_path"];
             output.fileName = [rs stringForColumn:@"file_name"];
             output.isDirectory = [rs intForColumn:@"is_directory"];
             output.userId = [rs intForColumn:@"user_id"];
@@ -258,7 +258,7 @@
             
             output.idFile = [rs intForColumn:@"id"];
             output.ocId = [rs stringForColumn:@"oc_id"];
-            output.filePath = [NSString stringWithFormat:@"%@%@",[UtilsUrls getRemovedPartOfFilePathAnd:user],[rs stringForColumn:@"file_path"]];
+            output.filePath = [rs stringForColumn:@"file_path"];
             output.fileName = [rs stringForColumn:@"file_name"];
             output.isDirectory = [rs intForColumn:@"is_directory"];
             output.userId = [rs intForColumn:@"user_id"];
@@ -856,7 +856,7 @@
             FileDto *currentFile = [[FileDto alloc] init];
             
             currentFile.idFile = [rs intForColumn:@"id"];
-            currentFile.filePath = [NSString stringWithFormat:@"%@%@",[UtilsUrls getRemovedPartOfFilePathAnd:mUser],[rs stringForColumn:@"file_path"]];
+            currentFile.filePath = [rs stringForColumn:@"file_path"];
             currentFile.fileName = [rs stringForColumn:@"file_name"];
             currentFile.isDirectory = [rs intForColumn:@"is_directory"];
             
@@ -1083,7 +1083,7 @@
             
             output.idFile = [rs intForColumn:@"id"];
             output.ocId = [rs stringForColumn:@"oc_id"];
-            output.filePath = [NSString stringWithFormat:@"%@%@",[UtilsUrls getRemovedPartOfFilePathAnd:mUser],[rs stringForColumn:@"file_path"]];
+            output.filePath = [rs stringForColumn:@"file_path"];
             output.fileName = [rs stringForColumn:@"file_name"];
             output.isDirectory = [rs intForColumn:@"is_directory"];
             output.userId = [rs intForColumn:@"user_id"];
@@ -1221,7 +1221,7 @@
             
             output.idFile = [rs intForColumn:@"id"];
             output.ocId = [rs stringForColumn:@"oc_id"];
-            output.filePath = [NSString stringWithFormat:@"%@%@",[UtilsUrls getRemovedPartOfFilePathAnd:currentUser],[rs stringForColumn:@"file_path"]];
+            output.filePath = [rs stringForColumn:@"file_path"];
             output.fileName = [rs stringForColumn:@"file_name"];
             output.isDirectory = [rs intForColumn:@"is_directory"];
             output.userId = [rs intForColumn:@"user_id"];
@@ -1557,7 +1557,7 @@
             
             currentFile.idFile = [rs intForColumn:@"id"];
             currentFile.ocId = [rs stringForColumn:@"oc_id"];
-            currentFile.filePath = [NSString stringWithFormat:@"%@%@",[UtilsUrls getRemovedPartOfFilePathAnd:user],[rs stringForColumn:@"file_path"]];
+            currentFile.filePath = [rs stringForColumn:@"file_path"];
             currentFile.fileName = [rs stringForColumn:@"file_name"];
             currentFile.isDirectory = [rs intForColumn:@"is_directory"];
             currentFile.userId = [rs intForColumn:@"user_id"];
@@ -1679,7 +1679,7 @@
                 
                 output.idFile = [rs intForColumn:@"id"];
                 output.ocId = [rs stringForColumn:@"oc_id"];
-                output.filePath = [NSString stringWithFormat:@"%@%@",[UtilsUrls getRemovedPartOfFilePathAnd:mUser],[rs stringForColumn:@"file_path"]];
+                output.filePath = [rs stringForColumn:@"file_path"];
                 output.fileName = [rs stringForColumn:@"file_name"];
                 output.isDirectory = [rs intForColumn:@"is_directory"];
                 output.userId = [rs intForColumn:@"user_id"];
@@ -1836,7 +1836,7 @@
             
             currentFile.idFile = [rs intForColumn:@"id"];
             currentFile.ocId = [rs stringForColumn:@"oc_id"];
-            currentFile.filePath = [NSString stringWithFormat:@"%@%@",[UtilsUrls getRemovedPartOfFilePathAnd:mUser],[rs stringForColumn:@"file_path"]];
+            currentFile.filePath = [rs stringForColumn:@"file_path"];
             currentFile.fileName = [rs stringForColumn:@"file_name"];
             currentFile.isDirectory = [rs intForColumn:@"is_directory"];
             currentFile.userId = [rs intForColumn:@"user_id"];
@@ -1893,7 +1893,7 @@
             
             currentFile.idFile = [rs intForColumn:@"id"];
             currentFile.ocId = [rs stringForColumn:@"oc_id"];
-            currentFile.filePath = [NSString stringWithFormat:@"%@%@",[UtilsUrls getRemovedPartOfFilePathAnd:mUser],[rs stringForColumn:@"file_path"]];
+            currentFile.filePath = [rs stringForColumn:@"file_path"];
             currentFile.fileName = [rs stringForColumn:@"file_name"];
             currentFile.isDirectory = [rs intForColumn:@"is_directory"];
             currentFile.userId = [rs intForColumn:@"user_id"];
@@ -1977,7 +1977,7 @@
         
         while ([rs next]) {
             
-            comparePath = [NSString stringWithFormat:@"%@%@",[UtilsUrls getRemovedPartOfFilePathAnd:mUser],[rs stringForColumn:@"file_path"]];
+            comparePath = [rs stringForColumn:@"file_path"];
             
             DLog(@"path = %@ comparePath = %@", path, comparePath);
             
@@ -1987,7 +1987,7 @@
                 
                 currentFile.idFile = [rs intForColumn:@"id"];
                 currentFile.ocId = [rs stringForColumn:@"oc_id"];
-                currentFile.filePath = [NSString stringWithFormat:@"%@%@",[UtilsUrls getRemovedPartOfFilePathAnd:mUser],[rs stringForColumn:@"file_path"]];
+                currentFile.filePath = [rs stringForColumn:@"file_path"];
                 currentFile.fileName = [rs stringForColumn:@"file_name"];
                 currentFile.isDirectory = [rs intForColumn:@"is_directory"];
                 currentFile.userId = [rs intForColumn:@"user_id"];
@@ -2100,7 +2100,7 @@
             
             fileTemp.idFile = [rs intForColumn:@"id"];
             fileTemp.ocId = [rs stringForColumn:@"oc_id"];
-            fileTemp.filePath = [NSString stringWithFormat:@"%@%@",[UtilsUrls getRemovedPartOfFilePathAnd:user],[rs stringForColumn:@"file_path"]];
+            fileTemp.filePath = [rs stringForColumn:@"file_path"];
             fileTemp.fileName = [rs stringForColumn:@"file_name"];
             fileTemp.isDirectory = [rs intForColumn:@"is_directory"];
             fileTemp.userId = [rs intForColumn:@"user_id"];

@@ -301,9 +301,7 @@
     DLog(@"currentUser.username: %@", currentUser.username);
     DLog(@"self.mUser.username: %@", _mUser.username);
     
-    if(!([currentUser.username isEqualToString:_mUser.username] &&
-         [currentUser.password isEqualToString:_mUser.password] &&
-         [currentUser.url isEqualToString:_mUser.url])) {
+    if(currentUser.idUser != _mUser.idUser) {
         //We are changing of user
         //Show the file list in the correct place
         [_tableView setContentOffset:CGPointMake(0,0) animated:animated];
@@ -333,7 +331,7 @@
             [self.navigationController popToRootViewControllerAnimated:animated];
         }
         
-        _currentRemoteFolder = [UtilsUrls getFullRemoteServerPathWithWebDav:currentUser];
+        _currentRemoteFolder = @"";
         
         //We get the current folder to create the local tree
         _currentLocalFolder = [NSString stringWithFormat:@"%@%ld/", [UtilsUrls getOwnCloudFilePath],(long)currentUser.idUser];
@@ -365,7 +363,7 @@
         [self refreshSharedPath];
         
         //Checking the etag
-        NSString *path = _currentRemoteFolder;
+        NSString *path = [NSString stringWithFormat:@"%@%@", [UtilsUrls getFullRemoteServerPathWithWebDav:_mUser], self.currentRemoteFolder];
         path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         
         [[AppDelegate sharedOCCommunication] readFile:path onCommunication:[AppDelegate sharedOCCommunication] successRequest:^(NSHTTPURLResponse *response, NSArray *items, NSString *redirectedServer) {
@@ -436,19 +434,9 @@
         //We check if the selected folder exist. Maybe the ID has change when we create a folder on move or upload.
         FileDto *currentFolder = [ManageFilesDB getFileDtoByIdFile:_fileIdToShowFiles.idFile];
         
-        NSArray *splitedUrl = [_currentRemoteFolder componentsSeparatedByString:@"/"];
-        
-        NSString *currentFolderFilePath = @"";
-        
-        for(int i = 3 ; i < [splitedUrl count] ; i ++) {
-            currentFolderFilePath = [NSString stringWithFormat:@"%@/%@", currentFolderFilePath, [splitedUrl objectAtIndex:i]];
-        }
-        
-        DLog(@"Url: %@", currentFolderFilePath);
-        
         if (currentFolder == nil) {
             //If is nil update the currentFolder
-            currentFolder = [ManageFilesDB getFolderByFilePath:currentFolderFilePath andFileName:currentFolder.fileName];
+            currentFolder = [ManageFilesDB getFolderByFilePath:_currentRemoteFolder andFileName:nil];
             _fileIdToShowFiles = [ManageFilesDB getFileDtoByIdFile:currentFolder.idFile];
         }
         
@@ -912,11 +900,9 @@
             }
             
             [[AppDelegate sharedOCCommunication] setUserAgent:[UtilsUrls getUserAgent]];
-
-            NSString *newURL = [NSString stringWithFormat:@"%@%@",self.currentRemoteFolder,[name encodeString:NSUTF8StringEncoding]];
-            NSString *rootPath = [UtilsUrls getFilePathOnDBByFullPath:newURL andUser:app.activeUser];
             
-            NSString *pathOfNewFolder = [NSString stringWithFormat:@"%@%@",[self.currentRemoteFolder stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], name ];
+            NSString *pathOfNewFolder = [NSString stringWithFormat:@"%@%@%@", [UtilsUrls getFullRemoteServerPathWithWebDav:_mUser], self.currentRemoteFolder, name];
+            pathOfNewFolder = [pathOfNewFolder stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             
             [[AppDelegate sharedOCCommunication] createFolder:pathOfNewFolder onCommunication:[AppDelegate sharedOCCommunication] withForbiddenCharactersSupported:[ManageUsersDB hasTheServerOfTheActiveUserForbiddenCharactersSupport] successRequest:^(NSHTTPURLResponse *response, NSString *redirectedServer) {
                 DLog(@"Folder created");
@@ -1084,16 +1070,17 @@
     self.elcPicker.imagePickerDelegate = self;
     
     
-    //Info of account and location path   
-    NSArray *splitedUrl = [_currentRemoteFolder componentsSeparatedByString:@"/"];
-    // int cont = [splitedUrl count];
-    NSString *folder = [NSString stringWithFormat:@"%@",[splitedUrl objectAtIndex:([splitedUrl count]-2)]];
-    
-    DLog(@"Folder selected to upload photos is:%@", folder);
+    NSString *folder;
     if (_fileIdToShowFiles.isRootFolder) {
         NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
         folder=appName;
     }
+    else {
+        //Info of account and location path
+        NSArray *splitedUrl = [_currentRemoteFolder componentsSeparatedByString:@"/"];
+        folder = [NSString stringWithFormat:@"%@",[splitedUrl objectAtIndex:([splitedUrl count]-2)]];
+    }
+    DLog(@"Folder selected to upload photos is:%@", folder);
     
     self.albumController.currentRemoteFolder=_currentRemoteFolder;
     self.albumController.locationInfo=folder;
@@ -1263,7 +1250,7 @@
     // If the selected cell is showing the SwipeMenu, we don´t navigate further
     FileDto *selectedFile = (FileDto *)[[[self.sortedArray copy] objectAtIndex:indexPath.section]objectAtIndex:indexPath.row];
     
-    selectedFile = [ManageFilesDB getFileDtoByFileName:selectedFile.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:selectedFile.filePath andUser:app.activeUser] andUser:app.activeUser];
+    selectedFile = [ManageFilesDB getFileDtoByFileName:selectedFile.fileName andFilePath:selectedFile.filePath andUser:app.activeUser];
     _selectedFileDto = selectedFile;
     
     if (IS_IPHONE){
@@ -1422,7 +1409,7 @@
             fileCell.labelInfoFile.text = [NSString stringWithFormat:@"%@", fileDateString];
         }
         
-        file = [ManageFilesDB getFileDtoByFileName:file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:file.filePath andUser:APP_DELEGATE.activeUser] andUser:APP_DELEGATE.activeUser];
+        file = [ManageFilesDB getFileDtoByFileName:file.fileName andFilePath:file.filePath andUser:APP_DELEGATE.activeUser];
         
         fileCell = [InfoFileUtils getTheStatusIconOntheFile:file onTheCell:fileCell andCurrentFolder:self.fileIdToShowFiles andIsSonOfFavoriteFolder:self.isCurrentFolderSonOfFavoriteFolder ofUser:APP_DELEGATE.activeUser];
         
@@ -1618,17 +1605,14 @@
    // DLog(@"name: %@", _selectedFileDto.fileName);
    // DLog(@"self.nextRemoteFolder: %@", _nextRemoteFolder);
     
-    _selectedFileDto = [ManageFilesDB getFileDtoByFileName:_selectedFileDto.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_selectedFileDto.filePath andUser:app.activeUser] andUser:app.activeUser];
+    _selectedFileDto = [ManageFilesDB getFileDtoByFileName:_selectedFileDto.fileName andFilePath:_selectedFileDto.filePath andUser:app.activeUser];
     
     NSMutableArray *directoryList = [NSMutableArray arrayWithArray:requestArray];
     
     //Change the filePath from the library to our format
     for (FileDto *currentFile in directoryList) {
         //Remove part of the item file path
-        NSString *partToRemove = [UtilsUrls getRemovedPartOfFilePathAnd:app.activeUser];
-        if([currentFile.filePath length] >= [partToRemove length]){
-            currentFile.filePath = [currentFile.filePath substringFromIndex:[partToRemove length]];
-        }
+        currentFile.filePath = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:currentFile.filePath andUser:app.activeUser];
     }
     
    // DLog(@"The directory List have: %d elements", directoryList.count);
@@ -1701,12 +1685,8 @@
 - (void) goToFolder:(FileDto *) selectedFile {
     
     NSMutableArray *allFiles = [ManageFilesDB getFilesByFileIdForActiveUser:selectedFile.idFile];
-    
-    //TODO:Refactor other utils methods
-    
-    NSArray *splitedUrl = [[UtilsUrls getFullRemoteServerPath:_mUser] componentsSeparatedByString:@"/"];
 
-    _nextRemoteFolder = [NSString stringWithFormat:@"%@//%@%@", [splitedUrl objectAtIndex:0], [splitedUrl objectAtIndex:2], [NSString stringWithFormat:@"%@%@",selectedFile.filePath, selectedFile.fileName]];
+    _nextRemoteFolder = [NSString stringWithFormat:@"%@%@",selectedFile.filePath, selectedFile.fileName];
     
     //if no files we ask for it else go to the next folder
     if([allFiles count] <= 0) {
@@ -1748,7 +1728,7 @@
     
      [[AppDelegate sharedOCCommunication] setUserAgent:[UtilsUrls getUserAgent]];
     
-    NSString *path = _nextRemoteFolder;
+    NSString *path = [NSString stringWithFormat:@"%@%@", [UtilsUrls getFullRemoteServerPathWithWebDav:_mUser], _nextRemoteFolder];
     
    path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
@@ -1809,8 +1789,8 @@
     FileDto *file = [notification object];
     
     //Update the filesDto
-    _fileIdToShowFiles = [ManageFilesDB getFileDtoByFileName:_fileIdToShowFiles.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_fileIdToShowFiles.filePath andUser:app.activeUser] andUser:app.activeUser];
-    file = [ManageFilesDB getFileDtoByFileName:file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:file.filePath andUser:app.activeUser] andUser:app.activeUser];
+    _fileIdToShowFiles = [ManageFilesDB getFileDtoByFileName:_fileIdToShowFiles.fileName andFilePath:_fileIdToShowFiles.filePath andUser:app.activeUser];
+    file = [ManageFilesDB getFileDtoByFileName:file.fileName andFilePath:file.filePath andUser:app.activeUser];
     
     if (file.fileId == _fileIdToShowFiles.idFile) {
         [self reloadTableFromDataBase];
@@ -1980,8 +1960,7 @@
     
     [[AppDelegate sharedOCCommunication] setUserAgent:[UtilsUrls getUserAgent]];
     
-    NSString *path = _currentRemoteFolder;
-    
+    NSString *path = [NSString stringWithFormat:@"%@%@", [UtilsUrls getFullRemoteServerPathWithWebDav:_mUser], self.currentRemoteFolder];
     path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     if (!app.userSessionCurrentToken) {
@@ -2128,7 +2107,7 @@
             }
         }
         
-        self.fileIdToShowFiles = [ManageFilesDB getFileDtoByFileName:self.fileIdToShowFiles.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.fileIdToShowFiles.filePath andUser:app.activeUser] andUser:app.activeUser];
+        self.fileIdToShowFiles = [ManageFilesDB getFileDtoByFileName:self.fileIdToShowFiles.fileName andFilePath:self.fileIdToShowFiles.filePath andUser:app.activeUser];
         
         [FileListDBOperations makeTheRefreshProcessWith:directoryList inThisFolder:_fileIdToShowFiles.idFile];
         
@@ -2190,7 +2169,7 @@
         
         [[AppDelegate sharedOCCommunication] setUserAgent:[UtilsUrls getUserAgent]];
         
-        NSString *path = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:_fileIdToShowFiles.filePath andUser:app.activeUser];
+        NSString *path = _fileIdToShowFiles.filePath;
         path = [path stringByAppendingString:_fileIdToShowFiles.fileName];
         path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         
@@ -2215,17 +2194,12 @@
                     //Do operations in background thread
                     
                     //Workaround to find the _fileIdToShowFiles because some times there are problems with the changes active user, and this method is launched before the viewwillappear
-                    if (app.activeUser) {
-                        FileDto *rootFileDto = [ManageFilesDB getRootFileDtoByUser:app.activeUser];
-                        NSString *pathActiveUser = rootFileDto.filePath;
-                       
-                        if ([_fileIdToShowFiles.filePath rangeOfString:pathActiveUser].location == NSNotFound) {
-                            _fileIdToShowFiles = rootFileDto;
-                            DLog(@"Changing between accounts, update _fileIdToShowFiles with root path with the active user");
-                        }
+                    if (app.activeUser.idUser != _fileIdToShowFiles.userId) {
+                        _fileIdToShowFiles = [ManageFilesDB getRootFileDtoByUser:app.activeUser];
+                        DLog(@"Changing between accounts, update _fileIdToShowFiles with root path with the active user");
                     }
                     
-                    NSArray *itemsToDelete = [ManageSharesDB getSharesByFolderPath:[NSString stringWithFormat:@"/%@%@", [UtilsUrls getFilePathOnDBByFilePathOnFileDto:_fileIdToShowFiles.filePath andUser:app.activeUser], _fileIdToShowFiles.fileName]];
+                    NSArray *itemsToDelete = [ManageSharesDB getSharesByFolderPath:[NSString stringWithFormat:@"/%@%@", _fileIdToShowFiles.filePath, _fileIdToShowFiles.fileName]];
                     
                     //1. We remove the removed shared from the Files table of the current folder
                     [ManageFilesDB setUnShareFilesOfFolder:_fileIdToShowFiles];
@@ -2594,7 +2568,7 @@
     AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
     //Update fileDto
-    self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.selectedFileDto.filePath andUser:app.activeUser] andUser:app.activeUser];
+    self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:self.selectedFileDto.filePath andUser:app.activeUser];
     
     if ([self.selectedFileDto isDownload] == downloading) {
         //if the file is downloading alert the user
@@ -2643,7 +2617,7 @@
      AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
     //Update fileDto
-  self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.selectedFileDto.filePath andUser:app.activeUser] andUser:app.activeUser];
+  self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:self.selectedFileDto.filePath andUser:app.activeUser];
     
     if ([_selectedFileDto isDownload] == downloading) {
         //if the file is downloading alert the user
@@ -2687,7 +2661,7 @@
     }
     
     //Update fileDto
-    self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.selectedFileDto.filePath andUser:app.activeUser] andUser:app.activeUser];
+    self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:self.selectedFileDto.filePath andUser:app.activeUser];
     
     if ([_selectedFileDto isDownload] == downloading) {
         //if the file is downloading alert the user
@@ -2753,7 +2727,7 @@
     AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
     //Update fileDto
-    self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.selectedFileDto.filePath andUser:app.activeUser] andUser:app.activeUser];
+    self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:self.selectedFileDto.filePath andUser:app.activeUser];
     
     [[AppDelegate sharedSyncFolderManager] addFolderToBeDownloaded:self.selectedFileDto];
 
@@ -2770,7 +2744,7 @@
     AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
     //Update fileDto
-    self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.selectedFileDto.filePath andUser:app.activeUser] andUser:app.activeUser];
+    self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:self.selectedFileDto.filePath andUser:app.activeUser];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[AppDelegate sharedSyncFolderManager] cancelDownloadsByFolder:self.selectedFileDto];
@@ -2783,7 +2757,7 @@
     AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
     //Update fileDto
-    self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.selectedFileDto.filePath andUser:app.activeUser] andUser:app.activeUser];
+    self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:self.selectedFileDto.filePath andUser:app.activeUser];
     self.selectedFileDto.isFavorite = YES;
     
     [ManageFilesDB updateTheFileID:self.selectedFileDto.idFile asFavorite:self.selectedFileDto.isFavorite];
@@ -2806,7 +2780,7 @@
     AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
     //Update fileDto
-    self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.selectedFileDto.filePath andUser:app.activeUser] andUser:app.activeUser];
+    self.selectedFileDto = [ManageFilesDB getFileDtoByFileName:self.selectedFileDto.fileName andFilePath:self.selectedFileDto.filePath andUser:app.activeUser];
     self.selectedFileDto.isFavorite = NO;
     
     [ManageFilesDB updateTheFileID:self.selectedFileDto.idFile asFavorite:self.selectedFileDto.isFavorite];
@@ -2866,7 +2840,7 @@
 - (void) setFavoriteOrUnfavorite {
     //Update the file from the DB
     AppDelegate *app = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    _selectedFileDto = [ManageFilesDB getFileDtoByFileName:_selectedFileDto.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_selectedFileDto.filePath andUser:app.activeUser] andUser:app.activeUser];
+    _selectedFileDto = [ManageFilesDB getFileDtoByFileName:_selectedFileDto.fileName andFilePath:_selectedFileDto.filePath andUser:app.activeUser];
     
     if (_selectedFileDto.isFavorite) {
         _selectedFileDto.isFavorite = NO;
@@ -3128,10 +3102,7 @@
     //Change the filePath from the library to our format
     for (FileDto *currentFile in directoryList) {
         //Remove part of the item file path
-        NSString *partToRemove = [UtilsUrls getRemovedPartOfFilePathAnd:app.activeUser];
-        if([currentFile.filePath length] >= [partToRemove length]){
-            currentFile.filePath = [currentFile.filePath substringFromIndex:[partToRemove length]];
-        }
+        currentFile.filePath = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:currentFile.filePath andUser:app.activeUser];
     }
     
     DLog(@"The directory List have: %ld elements", (long)directoryList.count);
@@ -3535,7 +3506,7 @@
         //Set the file as isNecessaryUpdate
         [ManageFilesDB setIsNecessaryUpdateOfTheFile:_selectedFileDto.idFile];
         //Update the file on memory
-        _selectedFileDto = [ManageFilesDB getFileDtoByFileName:_selectedFileDto.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:_selectedFileDto.filePath andUser:app.activeUser] andUser:app.activeUser];
+        _selectedFileDto = [ManageFilesDB getFileDtoByFileName:_selectedFileDto.fileName andFilePath:_selectedFileDto.filePath andUser:app.activeUser];
 
         //Do the request to get the shared items
         [self downloadTheFile];

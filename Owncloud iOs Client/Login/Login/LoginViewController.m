@@ -38,6 +38,8 @@
 #import "UtilsFramework.h"
 #import "UtilsCookies.h"
 #import "ManageCookiesStorageDB.h"
+#import "DeviceChooseViewController.h"
+#import "DeviceManager.h"
 
 #define k_http_prefix @"http://"
 #define k_https_prefix @"https://"
@@ -67,7 +69,7 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
         isSSLAccepted = YES;
         isErrorOnCredentials = NO;
         isError500 = NO;
-        isCheckingTheServerRightNow = NO;
+        isCheckingTheServerRightNow = YES;
         isConnectionToServer = NO;
         isNeedToCheckAgain = YES;
         hasInvalidAuth = NO;
@@ -109,7 +111,45 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
     
     isUserTextUp = NO;
     isPasswordTextUp = NO;
+    
+    [[DeviceManager sharedManager] addObserver:self forKeyPath:@"currentDevice" options:NSKeyValueObservingOptionNew context:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceConnected:) name:kNotificationDeviceConnected object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceConnectFailed:) name:kNotificationDeviceConnectFailed object:nil];
+}
 
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (object == [DeviceManager sharedManager]) {
+        if ([keyPath isEqualToString:@"currentDevice"]) {
+            if ([DeviceManager sharedManager].currentDevice) {
+                self.urlTextField.text = [DeviceManager sharedManager].currentDevice.deviceName;
+            }
+            else {
+                self.urlTextField.text = nil;
+            }
+        }
+    }
+}
+
+- (void)deviceConnected:(NSNotification *)noti
+{
+    Device *device = noti.object;
+    if (device == [DeviceManager sharedManager].currentDevice) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            [[CheckAccessToServer sharedManager] isConnectionToTheServerByUrl:[self getUrlToCheck]];
+        });
+    }
+}
+
+- (void)deviceConnectFailed:(NSNotification *)noti
+{
+    Device *device = noti.object;
+    if (device == [DeviceManager sharedManager].currentDevice) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self connectionToTheServer:NO];
+        });
+    }
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -868,11 +908,11 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
     [iconLeftImage setFrame:_imageTextFieldLeftFrame];
     
     self.urlTextField = [[UITextField alloc]initWithFrame:_urlFrame];
-    self.urlTextField.delegate = self;
-    [self.urlTextField setKeyboardType:UIKeyboardTypeURL];
-    [self.urlTextField setAutocorrectionType:UITextAutocorrectionTypeNo];
-    
-    [self.urlTextField setClearButtonMode:UITextFieldViewModeNever];
+//    self.urlTextField.delegate = self;
+//    [self.urlTextField setKeyboardType:UIKeyboardTypeURL];
+//    [self.urlTextField setAutocorrectionType:UITextAutocorrectionTypeNo];
+//    
+//    [self.urlTextField setClearButtonMode:UITextFieldViewModeNever];
     //searchField.borderStyle= UITextBorderStyleRoundedRect;
     self.urlTextField.borderStyle= UITextBorderStyleNone;
     //searchField.background=img;
@@ -884,29 +924,36 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
     self.urlTextField.textColor = [UIColor colorOfURLUserPassword];
     self.urlTextField.placeholder = NSLocalizedString(@"url_sample", nil);
     
-    if(!urlEditable) {
-        [self.urlTextField setEnabled:NO];
+//    if(!urlEditable) {
+//        [self.urlTextField setEnabled:NO];
+//    }
+    [self.urlTextField setEnabled:NO];
+    if(urlEditable) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
-    DLog(@"2- self.auxUrlForReloadTable: %@", self.auxUrlForReloadTable);
-    
-    self.urlTextField.text = self.auxUrlForReloadTable;
-    
-    refreshTestServerButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    
-    [refreshTestServerButton addTarget:self action:@selector(checkUrlManually) forControlEvents:UIControlEventTouchUpInside];
-    [refreshTestServerButton setFrame:refreshButtonFrame];
-    [refreshTestServerButton setBackgroundImage:[UIImage imageNamed:@"ReconnectIcon.png"] forState:UIControlStateNormal];
-    
-    if(([self.urlTextField.text length] > 0) && !isConnectionToServer && !isCheckingTheServerRightNow) {
-        [refreshTestServerButton setHidden:NO];
-    } else {
-        [refreshTestServerButton setHidden:YES];
+//    DLog(@"2- self.auxUrlForReloadTable: %@", self.auxUrlForReloadTable);
+//    
+//    self.urlTextField.text = self.auxUrlForReloadTable;
+    if ([DeviceManager sharedManager].currentDevice) {
+        self.urlTextField.text = [DeviceManager sharedManager].currentDevice.deviceName;
     }
+    
+//    refreshTestServerButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    
+//    [refreshTestServerButton addTarget:self action:@selector(checkUrlManually) forControlEvents:UIControlEventTouchUpInside];
+//    [refreshTestServerButton setFrame:refreshButtonFrame];
+//    [refreshTestServerButton setBackgroundImage:[UIImage imageNamed:@"ReconnectIcon.png"] forState:UIControlStateNormal];
+//    
+//    if(([self.urlTextField.text length] > 0) && !isConnectionToServer && !isCheckingTheServerRightNow) {
+//        [refreshTestServerButton setHidden:NO];
+//    } else {
+//        [refreshTestServerButton setHidden:YES];
+//    }
     
     [cell.contentView addSubview:iconLeftImage];
     [cell.contentView addSubview:self.urlTextField];
-    [cell.contentView addSubview:refreshTestServerButton];
+//    [cell.contentView addSubview:refreshTestServerButton];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
@@ -1131,7 +1178,12 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
         //show url
         switch (indexPath.section) {
             case 0:
-                //Nothing, is the url field
+                if (urlEditable) {
+                    DeviceChooseViewController *viewController = [[DeviceChooseViewController alloc] init];
+                    OCNavigationController *navController = [[OCNavigationController alloc] initWithRootViewController:viewController];
+                    //navController.navigationBar.translucent = NO;
+                    [self presentViewController:navController animated:YES completion:nil];
+                }
                 break;
                 
             case 1:
@@ -1659,7 +1711,9 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
     isCheckingTheServerRightNow = YES;
     isConnectionToServer = NO;
     
-    [[CheckAccessToServer sharedManager] isConnectionToTheServerByUrl:[self getUrlToCheck]];
+    if ([[DeviceManager sharedManager].currentDevice connect]) {
+        [[CheckAccessToServer sharedManager] isConnectionToTheServerByUrl:[self getUrlToCheck]];
+    }
 }
 
 -(NSString *)stripIndexPhpOrAppsFilesFromUrl:(NSString *)url {
@@ -1717,53 +1771,35 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
     
     DLog(@"getUrlToCheck");
     
-    NSString *url = [self getUrlChecked:self.urlTextField.text];
+    NSString *url = [NSString stringWithFormat:@"localhost:%d/owncloud/", [DeviceManager sharedManager].currentDevice.localPort];
     
     if ([url hasPrefix:k_https_prefix]) {
         isNeedToCheckAgain = NO;
         isHttps=YES;
-        url = [NSString stringWithFormat:@"%@", [self getUrlChecked: self.urlTextField.text]];
     } else if ([url hasPrefix:k_http_prefix]) {
         isNeedToCheckAgain = NO;
         isHttps = NO;
-        url = [NSString stringWithFormat:@"%@", [self getUrlChecked: self.urlTextField.text]];
     } else if (isNeedToCheckAgain) {
         isNeedToCheckAgain = YES;
         isHttps = YES;
-        url = [NSString stringWithFormat:@"%@%@",k_https_prefix,[self getUrlChecked: self.urlTextField.text]];
+        url = [NSString stringWithFormat:@"%@%@",k_https_prefix,url];
     } else {
         isNeedToCheckAgain = NO;
         isHttps = NO;
-        url = [NSString stringWithFormat:@"%@%@",k_http_prefix,[self getUrlChecked: self.urlTextField.text]];
+        url = [NSString stringWithFormat:@"%@%@",k_http_prefix,url];
     }
     return url;
 }
 
--(NSString *)getUrlChecked:(NSString *)byUrl {
-    
-    //We remove the accidentally last spaces " "
-    while([byUrl hasSuffix:@" "]) {
-        byUrl = [byUrl substringToIndex:[byUrl length] - 1];
+-(NSString *)getUrl {
+    NSString *httpOrHttps;
+    if(isHttps) {
+        httpOrHttps = k_https_prefix;
+    } else {
+        httpOrHttps = k_http_prefix;
     }
-    
-    DLog(@"byURL: |%@|",byUrl);
-    
-    //We check if the last char is a / if it is not we set it
-    char urlLastChar =[byUrl characterAtIndex:([byUrl length]-1)];
-    if(urlLastChar != '/') {
-        byUrl = [byUrl stringByAppendingString:@"/"];
-    }
-    
-    DLog(@"URL with /: %@", byUrl);
-    
-    //We remove the accidentally first spaces " "
-    while([byUrl hasPrefix:@" "]) {
-        byUrl = [byUrl substringFromIndex:1];
-        
-        DLog(@"byURL: |%@|",byUrl);
-    }
-    
-    return byUrl;
+
+    return [NSString stringWithFormat:@"%@localhost:%d/owncloud/", httpOrHttps, [DeviceManager sharedManager].currentDevice.localPort];
 }
 
 -(void)repeatTheCheckToTheServer {
@@ -1889,26 +1925,7 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
  *
  */
 - (void) updateConnectString{
-    
-    NSString *httpOrHttps = @"";
-    
-    if(isHttps) {
-        if([_urlTextField.text hasPrefix:k_https_prefix]) {
-            httpOrHttps = @"";
-        } else {
-            httpOrHttps = k_https_prefix;
-            
-        }
-    } else {
-        if([_urlTextField.text hasPrefix:k_http_prefix]) {
-            httpOrHttps = @"";
-        } else {
-            httpOrHttps = k_http_prefix;
-        }
-    }
-    
-    NSString *connectURL =[NSString stringWithFormat:@"%@%@%@",httpOrHttps,[self getUrlChecked: _urlTextField.text], k_url_webdav_server];
-    _connectString=connectURL;
+    _connectString = [NSString stringWithFormat:@"%@%@", [self getUrl], k_url_webdav_server];
 }
 
 
@@ -2171,20 +2188,7 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
     } else {
         
         UserDto *userDto = [[UserDto alloc] init];
-        
-        //We check if start with http or https to concat it
-        if([self.urlTextField.text hasPrefix:k_http_prefix] || [self.urlTextField.text hasPrefix:k_https_prefix]) {
-            userDto.url = [self getUrlChecked: self.urlTextField.text];
-            
-        } else {
-            if(isHttps) {
-                userDto.url = [NSString stringWithFormat:@"%@%@",k_https_prefix, [self getUrlChecked: self.urlTextField.text]];
-            } else {
-                userDto.url = [NSString stringWithFormat:@"%@%@",k_http_prefix, [self getUrlChecked: self.urlTextField.text]];
-            }
-        }
-        
-        //DLog(@"URL FINAL: %@", userDto.url);
+        userDto.deviceID = [DeviceManager sharedManager].currentDevice.deviceID;
         
         AppDelegate *app = (AppDelegate*)[[UIApplication sharedApplication] delegate];
         

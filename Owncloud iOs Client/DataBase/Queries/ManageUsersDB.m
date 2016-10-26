@@ -52,7 +52,7 @@
     [queue inTransaction:^(FMDatabase *db, BOOL *rollback) {
         BOOL correctQuery=NO;
         
-        correctQuery = [db executeUpdate:@"INSERT INTO users(url, ssl, activeaccount, has_share_api_support, has_sharee_api_support, has_cookies_support, has_forbidden_characters_support, has_capabilities_support, url_redirected) Values(?, ?, ?, ?, ?, ?, ?, ?, ?)", userDto.url, [NSNumber numberWithBool:userDto.ssl],  [NSNumber numberWithBool:userDto.activeaccount] , [NSNumber numberWithInteger:userDto.hasShareApiSupport], [NSNumber numberWithInteger:userDto.hasShareeApiSupport], [NSNumber numberWithBool:userDto.hasCookiesSupport], [NSNumber numberWithInteger:userDto.hasForbiddenCharactersSupport], [NSNumber numberWithInteger:userDto.hasCapabilitiesSupport], userDto.urlRedirected];
+        correctQuery = [db executeUpdate:@"INSERT INTO users(device_id, url, ssl, activeaccount, has_share_api_support, has_sharee_api_support, has_cookies_support, has_forbidden_characters_support, has_capabilities_support, url_redirected) Values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", userDto.deviceID, userDto.deviceID ? nil : userDto.url, [NSNumber numberWithBool:userDto.ssl],  [NSNumber numberWithBool:userDto.activeaccount] , [NSNumber numberWithInteger:userDto.hasShareApiSupport], [NSNumber numberWithInteger:userDto.hasShareeApiSupport], [NSNumber numberWithBool:userDto.hasCookiesSupport], [NSNumber numberWithInteger:userDto.hasForbiddenCharactersSupport], [NSNumber numberWithInteger:userDto.hasCapabilitiesSupport], userDto.urlRedirected];
         
         if (!correctQuery) {
             DLog(@"Error in insertUser");
@@ -82,7 +82,7 @@
     FMDatabaseQueue *queue = Managers.sharedDatabase;
     
     [queue inDatabase:^(FMDatabase *db) {
-        FMResultSet *rs = [db executeQuery:@"SELECT id, url, ssl, activeaccount, storage_occupied, storage, has_share_api_support, has_sharee_api_support, has_cookies_support, has_capabilities_support, has_forbidden_characters_support, instant_upload, background_instant_upload, path_instant_upload, only_wifi_instant_upload, timestamp_last_instant_upload, url_redirected, sorting_type FROM users WHERE activeaccount = 1  ORDER BY id ASC LIMIT 1"];
+        FMResultSet *rs = [db executeQuery:@"SELECT id, device_id, url, ssl, activeaccount, storage_occupied, storage, has_share_api_support, has_sharee_api_support, has_cookies_support, has_capabilities_support, has_forbidden_characters_support, instant_upload, background_instant_upload, path_instant_upload, only_wifi_instant_upload, timestamp_last_instant_upload, url_redirected, sorting_type FROM users WHERE activeaccount = 1  ORDER BY id ASC LIMIT 1"];
         
         DLog(@"RSColumnt count: %d", rs.columnCount);
         
@@ -92,7 +92,10 @@
             output=[UserDto new];
             
             output.idUser = [rs intForColumn:@"id"];
-            output.url = [rs stringForColumn:@"url"];
+            output.deviceID = [rs stringForColumn:@"device_id"];
+            if (output.deviceID.length == 0) {
+                output.url = [rs stringForColumn:@"url"];
+            }
             output.ssl = [rs intForColumn:@"ssl"];
             output.activeaccount = [rs intForColumn:@"activeaccount"];
             output.storageOccupied = [rs longForColumn:@"storage_occupied"];
@@ -143,7 +146,7 @@
     FMDatabaseQueue *queue = Managers.sharedDatabase;
     
     [queue inDatabase:^(FMDatabase *db) {
-        FMResultSet *rs = [db executeQuery:@"SELECT id, url, ssl, activeaccount, storage_occupied, storage, has_share_api_support, has_sharee_api_support, has_cookies_support, has_forbidden_characters_support, instant_upload, background_instant_upload, path_instant_upload, only_wifi_instant_upload, timestamp_last_instant_upload, url_redirected, sorting_type FROM users WHERE activeaccount = 1  ORDER BY id ASC LIMIT 1"];
+        FMResultSet *rs = [db executeQuery:@"SELECT id, device_id, url, ssl, activeaccount, storage_occupied, storage, has_share_api_support, has_sharee_api_support, has_cookies_support, has_forbidden_characters_support, instant_upload, background_instant_upload, path_instant_upload, only_wifi_instant_upload, timestamp_last_instant_upload, url_redirected, sorting_type FROM users WHERE activeaccount = 1  ORDER BY id ASC LIMIT 1"];
         
         DLog(@"RSColumnt count: %d", rs.columnCount);
         
@@ -153,7 +156,10 @@
             output=[UserDto new];
             
             output.idUser = [rs intForColumn:@"id"];
-            output.url = [rs stringForColumn:@"url"];
+            output.deviceID = [rs stringForColumn:@"device_id"];
+            if (output.deviceID.length == 0) {
+                output.url = [rs stringForColumn:@"url"];
+            }
             output.ssl = [rs intForColumn:@"ssl"];
             output.activeaccount = [rs intForColumn:@"activeaccount"];
             output.storageOccupied = [rs longForColumn:@"storage_occupied"];
@@ -233,12 +239,15 @@
     FMDatabaseQueue *queue = Managers.sharedDatabase;
     
     [queue inDatabase:^(FMDatabase *db) {
-        FMResultSet *rs = [db executeQuery:@"SELECT id, url, ssl, activeaccount, storage_occupied, storage, has_share_api_support, has_sharee_api_support, has_cookies_support, has_forbidden_characters_support, has_capabilities_support, instant_upload, background_instant_upload, path_instant_upload, only_wifi_instant_upload, timestamp_last_instant_upload, url_redirected, sorting_type FROM users WHERE id = ?", [NSNumber numberWithInteger:idUser]];
+        FMResultSet *rs = [db executeQuery:@"SELECT id, device_id, url, ssl, activeaccount, storage_occupied, storage, has_share_api_support, has_sharee_api_support, has_cookies_support, has_forbidden_characters_support, has_capabilities_support, instant_upload, background_instant_upload, path_instant_upload, only_wifi_instant_upload, timestamp_last_instant_upload, url_redirected, sorting_type FROM users WHERE id = ?", [NSNumber numberWithInteger:idUser]];
         
         while ([rs next]) {
             
             output.idUser = [rs intForColumn:@"id"];
-            output.url = [rs stringForColumn:@"url"];
+            output.deviceID = [rs stringForColumn:@"device_id"];
+            if (output.deviceID.length == 0) {
+                output.url = [rs stringForColumn:@"url"];
+            }
             output.ssl = [rs intForColumn:@"ssl"];
             output.activeaccount = [rs intForColumn:@"activeaccount"];
             output.storageOccupied = [rs longForColumn:@"storage_occupied"];
@@ -286,8 +295,17 @@
     
     for (UserDto *user in allUsers) {
         if ([user.username isEqualToString:userDto.username] ) {
-            if ([user.url isEqualToString:userDto.url]) {
-                output = YES;
+            if (user.deviceID.length > 0 && userDto.deviceID.length > 0) {
+                if ([user.deviceID isEqualToString:userDto.deviceID]) {
+                    output = YES;
+                    break;
+                }
+            }
+            else if (user.deviceID.length == 0 && userDto.deviceID.length == 0) {
+                if ([user.url isEqualToString:userDto.url]) {
+                    output = YES;
+                    break;
+                }
             }
         }
     }
@@ -308,7 +326,7 @@
     
     [queue inDatabase:^(FMDatabase *db) {
         
-        FMResultSet *rs = [db executeQuery:@"SELECT id, url, ssl, activeaccount, storage_occupied, storage, has_share_api_support, has_sharee_api_support, has_cookies_support, has_forbidden_characters_support, has_capabilities_support, instant_upload, background_instant_upload, path_instant_upload, only_wifi_instant_upload, timestamp_last_instant_upload, url_redirected, sorting_type FROM users ORDER BY id ASC"];
+        FMResultSet *rs = [db executeQuery:@"SELECT id, device_id, url, ssl, activeaccount, storage_occupied, storage, has_share_api_support, has_sharee_api_support, has_cookies_support, has_forbidden_characters_support, has_capabilities_support, instant_upload, background_instant_upload, path_instant_upload, only_wifi_instant_upload, timestamp_last_instant_upload, url_redirected, sorting_type FROM users ORDER BY id ASC"];
         
         UserDto *current = nil;
         
@@ -317,7 +335,10 @@
             current = [UserDto new];
             
             current.idUser= [rs intForColumn:@"id"];
-            current.url = [rs stringForColumn:@"url"];
+            current.deviceID = [rs stringForColumn:@"device_id"];
+            if (current.deviceID.length == 0) {
+                current.url = [rs stringForColumn:@"url"];
+            }
             current.ssl = [rs intForColumn:@"ssl"];
             current.activeaccount = [rs intForColumn:@"activeaccount"];
             current.storageOccupied = [rs longForColumn:@"storage_occupied"];
@@ -367,7 +388,7 @@
     
     [queue inDatabase:^(FMDatabase *db) {
         
-        FMResultSet *rs = [db executeQuery:@"SELECT id, url, ssl, activeaccount, storage_occupied, storage, has_share_api_support, has_sharee_api_support, has_cookies_support, has_forbidden_characters_support, has_capabilities_support, instant_upload, background_instant_upload, path_instant_upload, only_wifi_instant_upload, timestamp_last_instant_upload, sorting_type FROM users ORDER BY id ASC"];
+        FMResultSet *rs = [db executeQuery:@"SELECT id, device_id, url, ssl, activeaccount, storage_occupied, storage, has_share_api_support, has_sharee_api_support, has_cookies_support, has_forbidden_characters_support, has_capabilities_support, instant_upload, background_instant_upload, path_instant_upload, only_wifi_instant_upload, timestamp_last_instant_upload, sorting_type FROM users ORDER BY id ASC"];
         
         UserDto *current = nil;
         
@@ -376,7 +397,10 @@
             current = [UserDto new];
             
             current.idUser= [rs intForColumn:@"id"];
-            current.url = [rs stringForColumn:@"url"];
+            current.deviceID = [rs stringForColumn:@"device_id"];
+            if (current.deviceID.length == 0) {
+                current.url = [rs stringForColumn:@"url"];
+            }
             current.ssl = [rs intForColumn:@"ssl"];
             current.activeaccount = [rs intForColumn:@"activeaccount"];
             current.storageOccupied = [rs longForColumn:@"storage_occupied"];
@@ -620,12 +644,15 @@
     
     [queue inDatabase:^(FMDatabase *db) {
         
-        FMResultSet *rs = [db executeQuery:@"SELECT id, url, ssl, activeaccount, storage_occupied, storage, has_share_api_support, has_sharee_api_support, has_cookies_support, has_forbidden_characters_support, has_capabilities_support, instant_upload, background_instant_upload, path_instant_upload, only_wifi_instant_upload, timestamp_last_instant_upload, url_redirected, sorting_type FROM users ORDER BY id DESC LIMIT 1"];
+        FMResultSet *rs = [db executeQuery:@"SELECT id, device_id, url, ssl, activeaccount, storage_occupied, storage, has_share_api_support, has_sharee_api_support, has_cookies_support, has_forbidden_characters_support, has_capabilities_support, instant_upload, background_instant_upload, path_instant_upload, only_wifi_instant_upload, timestamp_last_instant_upload, url_redirected, sorting_type FROM users ORDER BY id DESC LIMIT 1"];
         
         while ([rs next]) {
             
             output.idUser = [rs intForColumn:@"id"];
-            output.url = [rs stringForColumn:@"url"];
+            output.deviceID = [rs stringForColumn:@"device_id"];
+            if (output.deviceID.length == 0) {
+                output.url = [rs stringForColumn:@"url"];
+            }
             output.ssl = [rs intForColumn:@"ssl"];
             output.activeaccount = [rs intForColumn:@"activeaccount"];
             output.storageOccupied = [rs longForColumn:@"storage_occupied"];
@@ -670,7 +697,7 @@
     [queue inTransaction:^(FMDatabase *db, BOOL *rollback) {
         BOOL correctQuery=NO;
         
-        correctQuery = [db executeUpdate:@"UPDATE users SET url=?, ssl=?, activeaccount=?, storage_occupied=?, storage=?, has_share_api_support=?, has_sharee_api_support=?, has_cookies_support=?, has_forbidden_characters_support=?, has_capabilities_support=?, instant_upload=?, background_instant_upload=?, path_instant_upload=?, only_wifi_instant_upload=?, timestamp_last_instant_upload=?, url_redirected=?, sorting_type=? WHERE id = ?", user.url, [NSNumber numberWithBool:user.ssl], [NSNumber numberWithBool:user.activeaccount], [NSNumber numberWithLong:user.storageOccupied], [NSNumber numberWithLong:user.storage], [NSNumber numberWithInteger:user.hasShareApiSupport], [NSNumber numberWithInteger:user.hasShareeApiSupport], [NSNumber numberWithInteger:user.hasCookiesSupport], [NSNumber numberWithInteger:user.hasForbiddenCharactersSupport], [NSNumber numberWithInteger:user.hasCapabilitiesSupport], [NSNumber numberWithBool:user.instantUpload], [NSNumber numberWithBool:user.backgroundInstantUpload], user.pathInstantUpload, [NSNumber numberWithBool:user.onlyWifiInstantUpload], [NSNumber numberWithLong:user.timestampInstantUpload], user.urlRedirected, [NSNumber numberWithInteger:user.sortingType], [NSNumber numberWithInteger:user.idUser]];
+        correctQuery = [db executeUpdate:@"UPDATE users SET device_id=?, url=?, ssl=?, activeaccount=?, storage_occupied=?, storage=?, has_share_api_support=?, has_sharee_api_support=?, has_cookies_support=?, has_forbidden_characters_support=?, has_capabilities_support=?, instant_upload=?, background_instant_upload=?, path_instant_upload=?, only_wifi_instant_upload=?, timestamp_last_instant_upload=?, url_redirected=?, sorting_type=? WHERE id = ?", user.deviceID, user.deviceID ? nil : user.url, [NSNumber numberWithBool:user.ssl], [NSNumber numberWithBool:user.activeaccount], [NSNumber numberWithLong:user.storageOccupied], [NSNumber numberWithLong:user.storage], [NSNumber numberWithInteger:user.hasShareApiSupport], [NSNumber numberWithInteger:user.hasShareeApiSupport], [NSNumber numberWithInteger:user.hasCookiesSupport], [NSNumber numberWithInteger:user.hasForbiddenCharactersSupport], [NSNumber numberWithInteger:user.hasCapabilitiesSupport], [NSNumber numberWithBool:user.instantUpload], [NSNumber numberWithBool:user.backgroundInstantUpload], user.pathInstantUpload, [NSNumber numberWithBool:user.onlyWifiInstantUpload], [NSNumber numberWithLong:user.timestampInstantUpload], user.urlRedirected, [NSNumber numberWithInteger:user.sortingType], [NSNumber numberWithInteger:user.idUser]];
         
         if (!correctQuery) {
             DLog(@"Error updating a user");

@@ -58,6 +58,7 @@
 #import "ManageTouchID.h"
 #import "InstantUpload.h"
 #import "DownloadUtils.h"
+#import "DeviceManager.h"
 
 NSString * CloseAlertViewWhenApplicationDidEnterBackground = @"CloseAlertViewWhenApplicationDidEnterBackground";
 NSString * RefreshSharesItemsAfterCheckServerVersion = @"RefreshSharesItemsAfterCheckServerVersion";
@@ -188,11 +189,40 @@ NSString * NotReachableNetworkForDownloadsNotification = @"NotReachableNetworkFo
     //Set up user agent, so this way all UIWebView will use it
     NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UtilsUrls getUserAgent], @"UserAgent", nil];
     [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
-
+    
+    [[DeviceManager sharedManager] updateDeviceList];
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceListUpdated:) name:kNotificationDeviceListUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceListUpdateFailed:) name:kNotificationDeviceListUpdateFailed object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceConnected:) name:kNotificationDeviceConnected object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceConnectFailed:) name:kNotificationDeviceConnectFailed object:nil];
     return YES;
 }
 
+- (void)deviceListUpdateFailed:(NSNotification *)noti
+{
+    [self connectionToTheServer:NO];
+}
 
+- (void)deviceConnected:(NSNotification *)noti
+{
+    Device *device = noti.object;
+    if ([device.deviceID isEqualToString:self.activeUser.deviceID]) {
+        [self performSelectorInBackground:@selector(checkIfServerSupportThings) withObject:nil];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            [[CheckAccessToServer sharedManager] isConnectionToTheServerByUrl:self.activeUser.url];
+        });
+    }
+}
+
+- (void)deviceConnectFailed:(NSNotification *)noti
+{
+    Device *device = noti.object;
+    if ([device.deviceID isEqualToString:self.activeUser.deviceID]) {
+        [self connectionToTheServer:NO];
+    }
+}
 
 ///-----------------------------------
 /// @name Set UINavBar Apperance for native mail
@@ -461,7 +491,6 @@ NSString * NotReachableNetworkForDownloadsNotification = @"NotReachableNetworkFo
     
     self.activeUser = [ManageUsersDB getActiveUserWithoutUserNameAndPassword];
     
-    NSString *wevDavString = [UtilsUrls getFullRemoteServerPathWithWebDav:_activeUser];
     NSString *localSystemPath = nil;
     
     //Check if we generate the interface from login screen or not
@@ -510,7 +539,7 @@ NSString * NotReachableNetworkForDownloadsNotification = @"NotReachableNetworkFo
         
         //Create view controllers and custom navigation controllers
         
-        _filesViewController = [[FilesViewController alloc] initWithNibName:@"FilesViewController" onFolder:wevDavString andFileId:0 andCurrentLocalFolder:localSystemPath];
+        _filesViewController = [[FilesViewController alloc] initWithNibName:@"FilesViewController" onFolder:@"" andFileId:0 andCurrentLocalFolder:localSystemPath];
         _filesViewController.isEtagRequestNecessary = YES;
         OCNavigationController *filesNavigationController = [[OCNavigationController alloc]initWithRootViewController:_filesViewController];
         
@@ -1302,7 +1331,7 @@ NSString * NotReachableNetworkForDownloadsNotification = @"NotReachableNetworkFo
                     
                     //Local folder
                     NSString *localFolder = nil;
-                    localFolder = [NSString stringWithFormat:@"%@%ld/%@", [UtilsUrls getOwnCloudFilePath], (long)self.activeUser.idUser, [UtilsUrls getFilePathOnDBByFilePathOnFileDto:file.filePath andUser:self.activeUser]];
+                    localFolder = [NSString stringWithFormat:@"%@%ld/%@", [UtilsUrls getOwnCloudFilePath], (long)self.activeUser.idUser, file.filePath];
                     localFolder = [localFolder stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
                     
                     download.currentLocalFolder = localFolder;
@@ -1934,16 +1963,10 @@ NSString * NotReachableNetworkForDownloadsNotification = @"NotReachableNetworkFo
 - (void)refreshAfterUploadAllFiles:(NSString *) currentRemoteFolder {
     DLog(@"refreshAfterUploadAllFiles");
     
-    NSString *remoteUrlWithoutDomain = [UtilsUrls getHttpAndDomainByURL:currentRemoteFolder];
-    remoteUrlWithoutDomain = [currentRemoteFolder substringFromIndex:remoteUrlWithoutDomain.length];
-    
-    NSString *currentFolderWithoutDomain = [UtilsUrls getHttpAndDomainByURL:_presentFilesViewController.currentRemoteFolder];
-    currentFolderWithoutDomain = [_presentFilesViewController.currentRemoteFolder substringFromIndex:currentFolderWithoutDomain.length];
-    
     //Only if is selected the first item: FileList.
     if (_ocTabBarController.selectedIndex == 0 && !_isUploadViewVisible ) {
         
-        if ([remoteUrlWithoutDomain isEqualToString:currentFolderWithoutDomain]) {
+        if ([currentRemoteFolder isEqualToString:_presentFilesViewController.currentRemoteFolder]) {
             [self checkAndRefreshFiles];
         }
     }
@@ -2239,6 +2262,7 @@ NSString * NotReachableNetworkForDownloadsNotification = @"NotReachableNetworkFo
             [[AppDelegate sharedOCCommunication] readFile:path onCommunication:[AppDelegate sharedOCCommunication] successRequest:^(NSHTTPURLResponse *response, NSArray *items, NSString *redirectedServer) {
                 if (items != nil && [items count] > 0) {
                     FileDto *currentFile = [items objectAtIndex:0];
+                    currentFile.filePath = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:currentFile.filePath andUser:self.activeUser];
                     [self theFileWasUploadedByCurrentUploadInBackground:currentUploadBackground andCurrentFile:currentFile];
                 }
                 
@@ -2283,6 +2307,7 @@ NSString * NotReachableNetworkForDownloadsNotification = @"NotReachableNetworkFo
             [[AppDelegate sharedOCCommunication] readFile:path onCommunication:[AppDelegate sharedOCCommunication] successRequest:^(NSHTTPURLResponse *response, NSArray *items, NSString *redirectedServer) {
                 if (items != nil && [items count] > 0) {
                     FileDto *currentFile = [items objectAtIndex:0];
+                    currentFile.filePath = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:currentFile.filePath andUser:self.activeUser];
                     [self theFileWasUploadedByCurrentUploadInBackground:currentUploadBackground andCurrentFile:currentFile];
                 }
             } failureRequest:^(NSHTTPURLResponse *response, NSError *error, NSString *redirectedServer) {
@@ -2319,7 +2344,7 @@ NSString * NotReachableNetworkForDownloadsNotification = @"NotReachableNetworkFo
     [self createAManageRequestUploadWithTheUploadOffline:fileForUpload];
     DLog(@"The file is on server");
     
-    currentFile = [ManageFilesDB getFileDtoByFileName:currentUploadBackground.uploadFileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:currentFile.filePath andUser:self.activeUser] andUser:self.activeUser];
+    currentFile = [ManageFilesDB getFileDtoByFileName:currentUploadBackground.uploadFileName andFilePath:currentFile.filePath andUser:self.activeUser];
     
     if (currentFile.isDownload == overwriting) {
         [ManageFilesDB setFileIsDownloadState:currentFile.idFile andState:downloaded];
@@ -2769,8 +2794,8 @@ NSString * NotReachableNetworkForDownloadsNotification = @"NotReachableNetworkFo
 - (void) reloadTableFromDataBaseIfFileIsVisibleOnList:(FileDto *) file {
     
     //Update the file and folder to be sure that the ids are right
-    FileDto *folder = [ManageFilesDB getFileDtoByFileName:self.presentFilesViewController.fileIdToShowFiles.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.presentFilesViewController.fileIdToShowFiles.filePath andUser:self.activeUser] andUser:self.activeUser];
-    file = [ManageFilesDB getFileDtoByFileName:file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:file.filePath andUser:self.activeUser] andUser:self.activeUser];
+    FileDto *folder = [ManageFilesDB getFileDtoByFileName:self.presentFilesViewController.fileIdToShowFiles.fileName andFilePath:self.presentFilesViewController.fileIdToShowFiles.filePath andUser:self.activeUser];
+    file = [ManageFilesDB getFileDtoByFileName:file.fileName andFilePath:file.filePath andUser:self.activeUser];
     
     if (folder.idFile == file.fileId) {
         [_presentFilesViewController reloadTableFromDataBase];
@@ -2780,8 +2805,8 @@ NSString * NotReachableNetworkForDownloadsNotification = @"NotReachableNetworkFo
 - (void) reloadCellByFile:(FileDto *) file {
     
     //Update the file and folder to be sure that the ids are right
-    FileDto *folder = [ManageFilesDB getFileDtoByFileName:self.presentFilesViewController.fileIdToShowFiles.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.presentFilesViewController.fileIdToShowFiles.filePath andUser:self.activeUser] andUser:self.activeUser];
-    file = [ManageFilesDB getFileDtoByFileName:file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:file.filePath andUser:self.activeUser] andUser:self.activeUser];
+    FileDto *folder = [ManageFilesDB getFileDtoByFileName:self.presentFilesViewController.fileIdToShowFiles.fileName andFilePath:self.presentFilesViewController.fileIdToShowFiles.filePath andUser:self.activeUser];
+    file = [ManageFilesDB getFileDtoByFileName:file.fileName andFilePath:file.filePath andUser:self.activeUser];
     
     if (folder.idFile == file.fileId) {
         [_presentFilesViewController reloadCellByFile:file];
@@ -2791,8 +2816,8 @@ NSString * NotReachableNetworkForDownloadsNotification = @"NotReachableNetworkFo
 - (void) reloadCellByUploadOffline:(UploadsOfflineDto *) uploadOffline {
     
     //Update the file and folder to be sure that the ids are right
-    FileDto *folder = [ManageFilesDB getFileDtoByFileName:self.presentFilesViewController.fileIdToShowFiles.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.presentFilesViewController.fileIdToShowFiles.filePath andUser:self.activeUser] andUser:self.activeUser];
-    FileDto *file = [ManageFilesDB getFileDtoByFileName:uploadOffline.uploadFileName andFilePath:[UtilsUrls getFilePathOnDBByFullPath:uploadOffline.destinyFolder andUser:self.activeUser] andUser:self.activeUser];
+    FileDto *folder = [ManageFilesDB getFileDtoByFileName:self.presentFilesViewController.fileIdToShowFiles.fileName andFilePath:self.presentFilesViewController.fileIdToShowFiles.filePath andUser:self.activeUser];
+    FileDto *file = [ManageFilesDB getFileDtoByFileName:uploadOffline.uploadFileName andFilePath:uploadOffline.destinyFolder andUser:self.activeUser];
     
     if (folder.idFile == file.fileId) {
         [_presentFilesViewController reloadCellByFile:file];
@@ -2859,7 +2884,9 @@ NSString * NotReachableNetworkForDownloadsNotification = @"NotReachableNetworkFo
     
     if (user) {
         ((CheckAccessToServer*)[CheckAccessToServer sharedManager]).delegate = self;
-        [[CheckAccessToServer sharedManager] isConnectionToTheServerByUrl:user.url withTimeout:k_timeout_fast];
+        if (user.url.length > 0) {
+            [[CheckAccessToServer sharedManager] isConnectionToTheServerByUrl:user.url withTimeout:k_timeout_fast];
+        }
     } else {
         [self checkIfIsNecesaryShowPassCode];
     }

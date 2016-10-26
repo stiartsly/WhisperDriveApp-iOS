@@ -116,7 +116,7 @@
     }
     
     //Update the datas of the new file
-    self.file = [ManageFilesDB getFileDtoByFileName:self.file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.file.filePath andUser:app.activeUser] andUser:app.activeUser];
+    self.file = [ManageFilesDB getFileDtoByFileName:self.file.fileName andFilePath:self.file.filePath andUser:app.activeUser];
     
     //Set file status like downloaded in Data Base
     [ManageFilesDB setFileIsDownloadState:self.file.idFile andState:downloaded];
@@ -137,7 +137,7 @@
     
     //On Ipad reload the preview if the file is the same has been updated
     if (!IS_IPHONE && [app.detailViewController.file.localFolder isEqualToString: self.file.localFolder]) {
-        self.file = [ManageFilesDB getFileDtoByFileName:self.file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.file.filePath andUser:app.activeUser] andUser:app.activeUser];
+        self.file = [ManageFilesDB getFileDtoByFileName:self.file.fileName andFilePath:self.file.filePath andUser:app.activeUser];
         [[NSNotificationCenter defaultCenter] postNotificationName:PreviewFileNotificationUpdated object:self.file];
     }
 }
@@ -150,7 +150,7 @@
         self.user = app.activeUser;
     }
     
-    self.file = [ManageFilesDB getFileDtoByFileName:self.file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.file.filePath andUser:self.user] andUser:self.user];
+    self.file = [ManageFilesDB getFileDtoByFileName:self.file.fileName andFilePath:self.file.filePath andUser:self.user];
     
     [ManageFilesDB updateFile:self.file.idFile withTaskIdentifier:k_task_identifier_invalid];
     [[AppDelegate sharedSyncFolderManager].forestOfFilesAndFoldersToBeDownloaded removeFileFromTheForest:self.file];

@@ -64,10 +64,8 @@
         if (_file.isDirectory) {
             DLog(@"Delete a folder");
             AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-            //Remove: /owncloud/remote.php/webdav/ to the pathFolder
-            NSString *pathFolder = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:_file.filePath andUser:app.activeUser];
             //Obtains the number of the downloaded files in DB which filepath contains the folder that the user want delete
-            _isFilesDownloadedInFolder=[ManageFilesDB isGetFilesByDownloadState:downloaded andByUser:app.activeUser andFolder:pathFolder];
+            _isFilesDownloadedInFolder=[ManageFilesDB isGetFilesByDownloadState:downloaded andByUser:app.activeUser andFolder:_file.filePath];
         }
         if((_file.isDownload || _isFilesDownloadedInFolder == YES) && (!_file.isFavorite && ![[AppDelegate sharedManageFavorites] isInsideAFavoriteFolderThisFile:self.file])) {
             DLog(@"Delete downloaded files or folder with downloaded files");
@@ -167,8 +165,7 @@
         //If the item deleted is a directory update the is_download state to notDownload in the files contains in the folder for deleted
         AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
         
-        NSString *pathFolder = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:_file.filePath andUser:app.activeUser];
-        pathFolder = [pathFolder stringByAppendingString:_file.fileName];
+        NSString *pathFolder = [_file.filePath stringByAppendingString:_file.fileName];
         
         [ManageFilesDB updateFilesByUser:app.activeUser andFolder:pathFolder toDownloadState:notDownload andIsNecessaryUpdate:NO];
         
@@ -207,7 +204,7 @@
     
     AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     
-    file = [ManageFilesDB getFileDtoByFileName:file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:file.filePath andUser:app.activeUser] andUser:app.activeUser];
+    file = [ManageFilesDB getFileDtoByFileName:file.fileName andFilePath:file.filePath andUser:app.activeUser];
     
     DLog(@"FilePath: %@", file.filePath);
     
@@ -373,13 +370,7 @@
         AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
         
         if (_isFilesDownloadedInFolder) {
-            
-            //Obtains the complete path of the folder
-            NSString *pathFolder = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:_file.filePath andUser:app.activeUser];
-            //Check if the id file is in the files into this folder
-            DLog(@"path folder: %@", pathFolder);
-            
-            if ([ManageFilesDB isThisFile:app.detailViewController.file.idFile ofThisUserId:app.activeUser.idUser intoThisFolder:pathFolder]) {
+            if ([ManageFilesDB isThisFile:app.detailViewController.file.idFile ofThisUserId:app.activeUser.idUser intoThisFolder:_file.filePath]) {
                 [app.detailViewController unselectCurrentFile];
             }
         }

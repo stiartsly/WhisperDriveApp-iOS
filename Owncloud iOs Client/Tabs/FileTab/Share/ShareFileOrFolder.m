@@ -217,7 +217,7 @@
     if (isFileDto) {
         //From fileDto
 
-        filePath = [UtilsUrls getFilePathOnDBwithRootSlashAndWithFileName:self.file.fileName ByFilePathOnFileDto:self.file.filePath andUser:app.activeUser];
+        filePath = [NSString stringWithFormat:@"/%@%@", self.file.filePath, self.file.fileName];
         
         for (OCSharedDto *current in sharesOfFile) {
             if (current.shareType == shareTypeLink) {
@@ -821,8 +821,7 @@
     
     FileDto *parentFolder = [ManageFilesDB getFileDtoByIdFile:file.fileId];
     
-    NSString *path = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:parentFolder.filePath andUser:APP_DELEGATE.activeUser];
-    path = [path stringByAppendingString:parentFolder.fileName];
+    NSString *path = [parentFolder.filePath stringByAppendingString:parentFolder.fileName];
     path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     [[AppDelegate sharedOCCommunication] readSharedByServer:APP_DELEGATE.activeUser.url andPath:path onCommunication:[AppDelegate sharedOCCommunication] successRequest:^(NSHTTPURLResponse *response, NSArray *listOfShared, NSString *redirectedServer) {
@@ -844,7 +843,7 @@
         
         if (!isSamlCredentialsError) {
             
-            NSArray *itemsToDelete = [ManageSharesDB getSharesByFolderPath:[NSString stringWithFormat:@"/%@%@", [UtilsUrls getFilePathOnDBByFilePathOnFileDto:parentFolder.filePath andUser:APP_DELEGATE.activeUser], parentFolder.fileName]];
+            NSArray *itemsToDelete = [ManageSharesDB getSharesByFolderPath:[NSString stringWithFormat:@"/%@%@", parentFolder.filePath, parentFolder.fileName]];
             
             //1. We remove the removed shared from the Files table of the current folder
             [ManageFilesDB setUnShareFilesOfFolder:parentFolder];
@@ -1002,8 +1001,7 @@
         if (buttonIndex != 0) {
             
             UITextField *passwordTextField = [alertView textFieldAtIndex:0];
-            AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-            NSString *filePath = [UtilsUrls getFilePathOnDBwithRootSlashAndWithFileName:self.file.fileName ByFilePathOnFileDto:self.file.filePath andUser:app.activeUser];
+            NSString *filePath = [NSString stringWithFormat:@"/%@%@", self.file.filePath, self.file.fileName];
             [self doRequestSharedLinkWithPath:filePath andPassword:passwordTextField.text];
 
         }else{

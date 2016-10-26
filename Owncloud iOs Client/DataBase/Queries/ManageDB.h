@@ -244,4 +244,11 @@
  */
 + (void) updateDBVersion17To18;
 
+/**
+ * Changes:
+ *
+ * Alter users table, adds new field to store the server device id
+ */
++ (void) updateDBVersion18To19;
+
 @end

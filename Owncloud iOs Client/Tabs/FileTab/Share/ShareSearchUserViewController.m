@@ -348,8 +348,7 @@
     
     [[AppDelegate sharedOCCommunication] setUserAgent:[UtilsUrls getUserAgent]];
     
-    NSString *path = [NSString stringWithFormat:@"/%@", [UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.shareFileDto.filePath andUser:APP_DELEGATE.activeUser]];
-    NSString *filePath = [NSString stringWithFormat: @"%@%@", path, self.shareFileDto.fileName];
+    NSString *filePath = [NSString stringWithFormat:@"/%@%@", self.shareFileDto.filePath, self.shareFileDto.fileName];
     
     NSInteger permissions = k_read_share_permission;
     

@@ -393,10 +393,7 @@
             //Change the filePath from the library to our format
             for (FileDto *currentFile in directoryList) {
                 //Remove part of the item file path
-                NSString *partToRemove = [UtilsUrls getRemovedPartOfFilePathAnd:self.user];
-                if([currentFile.filePath length] >= [partToRemove length]){
-                    currentFile.filePath = [currentFile.filePath substringFromIndex:[partToRemove length]];
-                }
+                currentFile.filePath = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:currentFile.filePath andUser:self.user];
             }
             
             for (int i = 0 ; i < directoryList.count ; i++) {

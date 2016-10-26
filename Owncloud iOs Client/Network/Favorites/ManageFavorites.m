@@ -145,7 +145,7 @@ NSString *FavoriteFileIsSync = @"FavoriteFileIsSync";
         
         //FileName full path
         NSString *serverPath = [UtilsUrls getFullRemoteServerPathWithWebDav:user];
-        NSString *path = [NSString stringWithFormat:@"%@%@%@",serverPath, [UtilsUrls getFilePathOnDBByFilePathOnFileDto:file.filePath andUser:user], file.fileName];
+        NSString *path = [NSString stringWithFormat:@"%@%@%@",serverPath, file.filePath, file.fileName];
         
         path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         
@@ -179,7 +179,7 @@ NSString *FavoriteFileIsSync = @"FavoriteFileIsSync";
                         FileDto *item = [directoryList objectAtIndex:0];
                         
                         //Update the file data
-                        FileDto *updatedFile = [ManageFilesDB getFileDtoByFileName:file.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:file.filePath andUser:user] andUser:user];
+                        FileDto *updatedFile = [ManageFilesDB getFileDtoByFileName:file.fileName andFilePath:file.filePath andUser:user];
                         
                         if (updatedFile.isDirectory) {
                             
@@ -208,7 +208,7 @@ NSString *FavoriteFileIsSync = @"FavoriteFileIsSync";
                                 //Data to download
                                 //Get the current local folder
                                 AppDelegate *app = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-                                NSString *currentLocalFolder = [NSString stringWithFormat:@"%@%ld/%@", [UtilsUrls getOwnCloudFilePath],(long)user.idUser, [UtilsUrls getFilePathOnDBByFilePathOnFileDto:updatedFile.filePath andUser:user]];
+                                NSString *currentLocalFolder = [NSString stringWithFormat:@"%@%ld/%@", [UtilsUrls getOwnCloudFilePath],(long)user.idUser, updatedFile.filePath];
                                 currentLocalFolder = [currentLocalFolder stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
                                 
                                 Download *download = [Download new];
@@ -328,7 +328,7 @@ NSString *FavoriteFileIsSync = @"FavoriteFileIsSync";
     
     //FileName full path
     NSString *serverPath = [UtilsUrls getFullRemoteServerPathWithWebDav:app.activeUser];
-    NSString *path = [NSString stringWithFormat:@"%@%@%@",serverPath, [UtilsUrls getFilePathOnDBByFilePathOnFileDto:favoriteFile.filePath andUser:app.activeUser], favoriteFile.fileName];
+    NSString *path = [NSString stringWithFormat:@"%@%@%@",serverPath, favoriteFile.filePath, favoriteFile.fileName];
     
     path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
@@ -350,10 +350,7 @@ NSString *FavoriteFileIsSync = @"FavoriteFileIsSync";
             //Change the filePath from the library to our format
             for (FileDto *currentFile in items) {
                 //Remove part of the item file path
-                NSString *partToRemove = [UtilsUrls getRemovedPartOfFilePathAnd:app.activeUser];
-                if([currentFile.filePath length] >= [partToRemove length]){
-                    currentFile.filePath = [currentFile.filePath substringFromIndex:[partToRemove length]];
-                }
+                currentFile.filePath = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:currentFile.filePath andUser:app.activeUser];
             }
             
             DLog(@"The directory List have: %ld elements", (long)items.count);
@@ -489,7 +486,7 @@ NSString *FavoriteFileIsSync = @"FavoriteFileIsSync";
     
     //FileName full path
     NSString *serverPath = [UtilsUrls getFullRemoteServerPathWithWebDav:app.activeUser];
-    NSString *path = [NSString stringWithFormat:@"%@%@%@",serverPath, [UtilsUrls getFilePathOnDBByFilePathOnFileDto:file.filePath andUser:app.activeUser], file.fileName];
+    NSString *path = [NSString stringWithFormat:@"%@%@%@",serverPath, file.filePath, file.fileName];
     
     path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
@@ -518,10 +515,7 @@ NSString *FavoriteFileIsSync = @"FavoriteFileIsSync";
             //Change the filePath from the library to our format
             for (FileDto *currentFile in items) {
                 //Remove part of the item file path
-                NSString *partToRemove = [UtilsUrls getRemovedPartOfFilePathAnd:app.activeUser];
-                if([currentFile.filePath length] >= [partToRemove length]){
-                    currentFile.filePath = [currentFile.filePath substringFromIndex:[partToRemove length]];
-                }
+                currentFile.filePath = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:currentFile.filePath andUser:app.activeUser];
             }
             
             DLog(@"The directory List have: %lu elements", (unsigned long)items.count);

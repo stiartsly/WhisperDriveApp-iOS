@@ -357,13 +357,13 @@
 
 - (void) updateInterfaceWithShareLinkStatus {
     
-    self.sharedItem = [ManageFilesDB getFileDtoByFileName:self.sharedItem.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.sharedItem.filePath andUser:APP_DELEGATE.activeUser] andUser:APP_DELEGATE.activeUser];
+    self.sharedItem = [ManageFilesDB getFileDtoByFileName:self.sharedItem.fileName andFilePath:self.sharedItem.filePath andUser:APP_DELEGATE.activeUser];
     
     if ([ManageSharesDB getTheOCShareByFileDto:self.sharedItem andShareType:shareTypeLink andUser:APP_DELEGATE.activeUser]) {
         
         self.isShareLinkEnabled = true;
         
-        self.sharedItem = [ManageFilesDB getFileDtoByFileName:self.sharedItem.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.sharedItem.filePath andUser:APP_DELEGATE.activeUser] andUser:APP_DELEGATE.activeUser];
+        self.sharedItem = [ManageFilesDB getFileDtoByFileName:self.sharedItem.fileName andFilePath:self.sharedItem.filePath andUser:APP_DELEGATE.activeUser];
         
         if (self.sharedFileOrFolder == nil) {
             self.sharedFileOrFolder = [ShareFileOrFolder new];
@@ -399,7 +399,7 @@
 
 - (void) checkForShareWithUsersOrGroups {
     
-    NSString *path = [NSString stringWithFormat:@"/%@%@", [UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.sharedItem.filePath andUser:APP_DELEGATE.activeUser], self.sharedItem.fileName];
+    NSString *path = [NSString stringWithFormat:@"/%@%@", self.sharedItem.filePath, self.sharedItem.fileName];
     
     NSArray *sharesWith = [ManageSharesDB getSharesByUser:APP_DELEGATE.activeUser.idUser andPath:path];
     
@@ -553,7 +553,7 @@
     
     self.sharedFileOrFolder.parentViewController = self;
     
-    self.sharedItem = [ManageFilesDB getFileDtoByFileName:self.sharedItem.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.sharedItem.filePath andUser:APP_DELEGATE.activeUser] andUser:APP_DELEGATE.activeUser];
+    self.sharedItem = [ManageFilesDB getFileDtoByFileName:self.sharedItem.fileName andFilePath:self.sharedItem.filePath andUser:APP_DELEGATE.activeUser];
     
     OCSharedDto *ocShare = [ManageSharesDB getTheOCShareByFileDto:self.sharedItem andShareType:shareTypeLink andUser:APP_DELEGATE.activeUser];
     
@@ -585,7 +585,7 @@
     
     self.sharedFileOrFolder.parentViewController = self;
     
-    self.sharedItem = [ManageFilesDB getFileDtoByFileName:self.sharedItem.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.sharedItem.filePath andUser:APP_DELEGATE.activeUser] andUser:APP_DELEGATE.activeUser];
+    self.sharedItem = [ManageFilesDB getFileDtoByFileName:self.sharedItem.fileName andFilePath:self.sharedItem.filePath andUser:APP_DELEGATE.activeUser];
     
     OCSharedDto *ocShare = [ManageSharesDB getTheOCShareByFileDto:self.sharedItem andShareType:shareTypeLink andUser:APP_DELEGATE.activeUser];
 
@@ -602,7 +602,7 @@
     
     self.sharedFileOrFolder.parentViewController = self;
     
-    self.sharedItem = [ManageFilesDB getFileDtoByFileName:self.sharedItem.fileName andFilePath:[UtilsUrls getFilePathOnDBByFilePathOnFileDto:self.sharedItem.filePath andUser:APP_DELEGATE.activeUser] andUser:APP_DELEGATE.activeUser];
+    self.sharedItem = [ManageFilesDB getFileDtoByFileName:self.sharedItem.fileName andFilePath:self.sharedItem.filePath andUser:APP_DELEGATE.activeUser];
     
     [self.sharedFileOrFolder checkSharedStatusOfFile:self.sharedItem];
     

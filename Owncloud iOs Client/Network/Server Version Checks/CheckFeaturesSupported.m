@@ -44,7 +44,7 @@
         app.activeUser = [ManageUsersDB getActiveUser];
     }
     
-    if (app.activeUser) {
+    if (app.activeUser && app.activeUser.url.length > 0) {
         
         [[AppDelegate sharedOCCommunication] getFeaturesSupportedByServer:app.activeUser.url onCommunication:[AppDelegate sharedOCCommunication] successRequest:^(NSHTTPURLResponse *response, BOOL hasShareSupport, BOOL hasShareeSupport, BOOL hasCookiesSupport, BOOL hasForbiddenCharactersSupport, BOOL hasCapabilitiesSupport, BOOL hasFedSharesOptionShareSupport, NSString *redirectedServer) {
             

@@ -570,7 +570,8 @@
             
             failedCell.labelTitle.text=[currentManageUploadRequest.currentUpload.uploadFileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             failedCell.labelLengthAndError.text=lengthAndError;
-            failedCell.labelUserName.text=[NSString stringWithFormat:@"%@@%@", currentManageUploadRequest.userUploading.username, [UtilsUrls getUrlServerWithoutHttpOrHttps:currentManageUploadRequest.userUploading.url]];
+            failedCell.labelUserName.text=[NSString stringWithFormat:@"%@@%@", currentManageUploadRequest.userUploading.username,
+                currentManageUploadRequest.userUploading.deviceID ? currentManageUploadRequest.userUploading.deviceName :  [UtilsUrls getUrlServerWithoutHttpOrHttps:currentManageUploadRequest.userUploading.url]];
             //If there are SAML replacind the percents escapes with UTF8 coding
             if (k_is_sso_active) {
                 failedCell.labelUserName.text = [failedCell.labelUserName.text stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -625,7 +626,8 @@
             uploadRecentCell.labelTitle.text=[currentManageUploadRequest.currentUpload.uploadFileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             uploadRecentCell.labelLengthAndDate.text=labelLengthAndDateString;
             uploadRecentCell.labelPath.text=currentManageUploadRequest.pathOfUpload;
-            uploadRecentCell.labelUserName.text=[NSString stringWithFormat:@"%@@%@", currentManageUploadRequest.userUploading.username, [UtilsUrls getUrlServerWithoutHttpOrHttps:currentManageUploadRequest.userUploading.url]];
+            uploadRecentCell.labelUserName.text=[NSString stringWithFormat:@"%@@%@", currentManageUploadRequest.userUploading.username,
+                currentManageUploadRequest.userUploading.deviceID ? currentManageUploadRequest.userUploading.deviceName : [UtilsUrls getUrlServerWithoutHttpOrHttps:currentManageUploadRequest.userUploading.url]];
             //If there are SAML replacind the percents escapes with UTF8 coding
             if (k_is_sso_active) {
                 uploadRecentCell.labelUserName.text = [uploadRecentCell.labelUserName.text stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -815,7 +817,8 @@
         if (k_is_sso_active) {
             userName= [userName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         }
-        NSString* temp=[NSString stringWithFormat:@"%@ %@@%@", NSLocalizedString(@"change_active_user", nil), userName, [UtilsUrls getUrlServerWithoutHttpOrHttps:userSelected.url]];
+        NSString* temp=[NSString stringWithFormat:@"%@ %@@%@", NSLocalizedString(@"change_active_user", nil), userName,
+                        userSelected.deviceID ? userSelected.deviceName : [UtilsUrls getUrlServerWithoutHttpOrHttps:userSelected.url]];
         UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:nil
                                                            message:temp
                                                           delegate:nil
@@ -852,7 +855,8 @@
         if (k_is_sso_active) {
             userName= [userName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         }
-        NSString* temp=[NSString stringWithFormat:@"%@ %@@%@", NSLocalizedString(@"change_active_user", nil), userName, [UtilsUrls getUrlServerWithoutHttpOrHttps:userSelected.url]];
+        NSString* temp=[NSString stringWithFormat:@"%@ %@@%@", NSLocalizedString(@"change_active_user", nil), userName,
+                        userSelected.deviceID ? userSelected.deviceName : [UtilsUrls getUrlServerWithoutHttpOrHttps:userSelected.url]];
         UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:nil
                                                            message:temp
                                                           delegate:nil
@@ -931,7 +935,8 @@
                 userName= [userName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             }
 
-            NSString* temp=[NSString stringWithFormat:@"%@ %@@%@", NSLocalizedString(@"change_active_user", nil), userName, [UtilsUrls getUrlServerWithoutHttpOrHttps:userSelected.url]];
+            NSString* temp=[NSString stringWithFormat:@"%@ %@@%@", NSLocalizedString(@"change_active_user", nil), userName,
+                            userSelected.deviceID ? userSelected.deviceName : [UtilsUrls getUrlServerWithoutHttpOrHttps:userSelected.url]];
             UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:nil
                                                                message:temp
                                                               delegate:nil
@@ -970,7 +975,8 @@
         if (k_is_sso_active) {
             userName= [userName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         }
-        NSString* temp=[NSString stringWithFormat:@"%@ %@@%@", NSLocalizedString(@"change_active_user", nil), userName, [UtilsUrls getUrlServerWithoutHttpOrHttps:userSelected.url]];
+        NSString* temp=[NSString stringWithFormat:@"%@ %@@%@", NSLocalizedString(@"change_active_user", nil), userName,
+                        userSelected.deviceID ? userSelected.deviceName : [UtilsUrls getUrlServerWithoutHttpOrHttps:userSelected.url]];
         UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:nil
                                                            message:temp
                                                           delegate:nil
@@ -1052,11 +1058,6 @@
     if (self.selectedFileDtoToResolveNotPermission) {
         
         //If exist file related with the select upload put in downloaded state
-        //UserDto *user = [ManageUsersDB getUserByIdUser:self.selectedFileDtoToResolveNotPermission.userId];
-        
-       // NSString *parentFolder = [UtilsUrls getFilePathOnDBByFullPath:self.selectedFileDtoToResolveNotPermission.destinyFolder andUser:user];
-        
-      //  FileDto *uploadFile = [ManageFilesDB getFileDtoByFileName:self.selectedFileDtoToResolveNotPermission.uploadFileName andFilePath:parentFolder andUser:user];
         
         FileDto *uploadFile = [UploadUtils getFileDtoByUploadOffline:self.selectedFileDtoToResolveNotPermission];
         
@@ -1066,21 +1067,18 @@
 
     }
     
-    DLog(@"Change Folder");
+    DLog(@"Change Folder : %@", folder);
     //TODO. Change current Remote Folder
     _currentRemoteFolder=folder;
     
-    NSArray *splitedUrl = [folder componentsSeparatedByString:@"/"];
-    // int cont = [splitedUrl count];
-    NSString *folderName = [NSString stringWithFormat:@"/%@",[splitedUrl objectAtIndex:([splitedUrl count]-2)]];
-    
-    DLog(@"Folder is:%@", folderName);
-    if ([_currentRemoteFolder isEqualToString:[UtilsUrls getFullRemoteServerPathWithWebDav:app.activeUser]]) {
+    if (_currentRemoteFolder.length == 0) {
         NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
-        folderName=appName;
+        _locationInfo = appName;
     }
-    
-    _locationInfo=folderName;
+    else {
+        NSArray *splitedUrl = [folder componentsSeparatedByString:@"/"];
+        _locationInfo = [NSString stringWithFormat:@"/%@", [splitedUrl objectAtIndex:([splitedUrl count]-2)]];
+    }
 
     _selectedUploadToResolveTheConflict.destinyFolder=folder;
     

@@ -233,8 +233,7 @@
         DLog(@"URL : %@", self.originalURL.path);
         
         
-        NSString *serverPath = [UtilsUrls getFilePathOnDBByFilePathOnFileDto:fileDto.filePath andUser:self.user];
-        NSString *folder = [NSString stringWithFormat:@"%@%@", serverPath, fileDto.fileName];
+        NSString *folder = [fileDto.filePath stringByAppendingPathComponent:fileDto.fileName];
        
         NSURL *destinationUrl = [self.documentStorageURL URLByAppendingPathComponent:folder];
         

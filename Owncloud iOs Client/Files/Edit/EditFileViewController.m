@@ -222,22 +222,22 @@
    
     AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     
-    NSString *fullRemotePath = @"";
+    NSString *destinyRemotePath;
     
     if (self.isModeEditing) {
-        fullRemotePath = [NSString stringWithFormat:@"%@",[UtilsUrls getFullRemoteServerParentPathByFile:self.currentFileDto andUser:app.activeUser]];
+        destinyRemotePath = self.currentFileDto.filePath;
     } else {
-        fullRemotePath = [NSString stringWithFormat:@"%@",[UtilsUrls getFullRemoteServerFilePathByFile:self.currentFileDto andUser:app.activeUser]];
+        destinyRemotePath = [self.currentFileDto.filePath stringByAppendingString:self.currentFileDto.fileName];
     }
     
     long long fileLength = [[[[NSFileManager defaultManager] attributesOfItemAtPath:tempLocalPath error:nil] valueForKey:NSFileSize] unsignedLongLongValue];
     
-    if (![UtilsUrls isFileUploadingWithPath:fullRemotePath andUser:app.activeUser]) {
+    if (![UtilsUrls isFileUploadingWithPath:destinyRemotePath andUser:app.activeUser]) {
         
         UploadsOfflineDto *upload = [UploadsOfflineDto new];
         
         upload.originPath = tempLocalPath;
-        upload.destinyFolder = fullRemotePath;
+        upload.destinyFolder = destinyRemotePath;
         upload.uploadFileName = fileName;
         upload.kindOfError = notAnError;
         upload.estimateLength = (long)fileLength;
