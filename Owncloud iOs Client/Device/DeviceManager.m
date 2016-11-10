@@ -17,6 +17,8 @@
 #import "TSMessage.h"
 #import <WhisperManagedCore/WhisperManagedCore.h>
 
+static NSString * const ElastosCarrierService = @"192.168.7.195:18080";
+static NSString * const ElastosCarrierAPIservice = @"192.168.7.195:8443";
 static NSString * const APPID = @"3DF1AC53C8BE42EFB14426DECEA2BFDD";
 static int const KMaxSessionNum = 2;
 
@@ -176,22 +178,12 @@ typedef NS_ENUM (int, ServerConnectStatus) {
                 
                 if (deletedDevices.count > 0) {
                     [_devices removeObjectsInArray:deletedDevices];
-                    if (_devices.count == 0) {
+                    if (_devices.count == 0 || [deletedDevices containsObject:_currentDevice]) {
                         self.currentDevice = nil;
                     }
-                    else if ([deletedDevices containsObject:_currentDevice]) {
-                        self.currentDevice = _devices[0];
-                    }
-                    else if (_currentDevice) {
-                        if (![_currentDevice.deviceName isEqualToString:[[NSUserDefaults standardUserDefaults] objectForKey:KEY_CurrentDeviceName]]) {
-                            [[NSUserDefaults standardUserDefaults] setObject:_currentDevice.deviceName forKey:KEY_CurrentDeviceName];
-                            [[NSUserDefaults standardUserDefaults] synchronize];
-                        }
-                        
-                        [_currentDevice connect];
-                    }
                 }
-                else if (_currentDevice) {
+                
+                if (_currentDevice) {
                     if (![_currentDevice.deviceName isEqualToString:[[NSUserDefaults standardUserDefaults] objectForKey:KEY_CurrentDeviceName]]) {
                         [[NSUserDefaults standardUserDefaults] setObject:_currentDevice.deviceName forKey:KEY_CurrentDeviceName];
                         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -199,9 +191,9 @@ typedef NS_ENUM (int, ServerConnectStatus) {
                     
                     [_currentDevice connect];
                 }
-                else if (_devices.count > 0) {
-                    self.currentDevice = _devices[0];
-                }
+//                else if (_devices.count > 0) {
+//                    self.currentDevice = _devices[0];
+//                }
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationDeviceListUpdated object:nil userInfo:nil];
             }
@@ -304,7 +296,11 @@ typedef NS_ENUM (int, ServerConnectStatus) {
 
 - (NSString *)ECSClientGetPreference:(NSString *)key {
     NSString *result = nil;
-    if ([key isEqualToString:@"app.Id"]) {
+    if ([key isEqualToString:@"carrier.server.host"]) {
+        result = ElastosCarrierService;
+    } else if ([key isEqualToString:@"api.carrier.server.host"]) {
+        result = ElastosCarrierAPIservice;
+    } else if ([key isEqualToString:@"app.Id"]) {
         result = APPID;
     } else if ([key isEqualToString:@"app.key"]) {
         result = APPID;
@@ -350,9 +346,7 @@ typedef NS_ENUM (int, ServerConnectStatus) {
             switch (event) {
                 case ECSDeviceEventOnline:
                     device.status = event;
-                    if (device == _currentDevice) {
-                        [device connect];
-                    }
+                    [device connect];
                     break;
                     
                 case ECSDeviceEventOffline:

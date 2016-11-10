@@ -56,6 +56,10 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
 
 @implementation LoginViewController
 
+- (void)dealloc {
+    [[DeviceManager sharedManager] removeObserver:self forKeyPath:@"currentDevice"];
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
@@ -69,7 +73,7 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
         isSSLAccepted = YES;
         isErrorOnCredentials = NO;
         isError500 = NO;
-        isCheckingTheServerRightNow = YES;
+        isCheckingTheServerRightNow = NO;
         isConnectionToServer = NO;
         isNeedToCheckAgain = YES;
         hasInvalidAuth = NO;
@@ -113,8 +117,8 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
     isPasswordTextUp = NO;
     
     [[DeviceManager sharedManager] addObserver:self forKeyPath:@"currentDevice" options:NSKeyValueObservingOptionNew context:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceConnected:) name:kNotificationDeviceConnected object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceConnectFailed:) name:kNotificationDeviceConnectFailed object:nil];
+    [nc addObserver:self selector:@selector(deviceConnected:) name:kNotificationDeviceConnected object:nil];
+    [nc addObserver:self selector:@selector(deviceConnectFailed:) name:kNotificationDeviceConnectFailed object:nil];
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -126,6 +130,11 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
             }
             else {
                 self.urlTextField.text = nil;
+                
+                isCheckingTheServerRightNow = NO;
+                isConnectionToServer = NO;
+                isLoginButtonEnabled = NO;
+                [self.tableView reloadData];
             }
         }
     }
@@ -137,7 +146,9 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
     if (device == [DeviceManager sharedManager].currentDevice) {
         dispatch_async(dispatch_get_main_queue(), ^{
             
-            [[CheckAccessToServer sharedManager] isConnectionToTheServerByUrl:[self getUrlToCheck]];
+            //[self checkUrlManually];
+            //[[CheckAccessToServer sharedManager] isConnectionToTheServerByUrl:[self getUrlToCheck]];
+            [self textFieldDidEndEditing:self.urlTextField];
         });
     }
 }
@@ -156,8 +167,13 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
     
     [super viewDidAppear:animated];
     
+    ((CheckAccessToServer *)[CheckAccessToServer sharedManager]).delegate = self;
+    
     if(![self.auxUrlForReloadTable isEqualToString:@""]) {
         DLog(@"1- self.auxUrlForReloadTable: %@",self.auxUrlForReloadTable);
+        [self checkUrlManually];
+    }
+    else if([DeviceManager sharedManager].currentDevice && isConnectionToServer == NO) {
         [self checkUrlManually];
     }
 }
@@ -166,11 +182,6 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
     
     [super viewWillAppear:animated];
     
-    ((CheckAccessToServer *)[CheckAccessToServer sharedManager]).delegate = self;
-    
-    if(self.urlTextField.text.length > 0 && isConnectionToServer == NO) {
-        [self checkUrlManually];
-    }
     
 }
 
@@ -932,28 +943,28 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
-//    DLog(@"2- self.auxUrlForReloadTable: %@", self.auxUrlForReloadTable);
-//    
-//    self.urlTextField.text = self.auxUrlForReloadTable;
+    DLog(@"2- self.auxUrlForReloadTable: %@", self.auxUrlForReloadTable);
     if ([DeviceManager sharedManager].currentDevice) {
         self.urlTextField.text = [DeviceManager sharedManager].currentDevice.deviceName;
+    } else {
+        self.urlTextField.text = self.auxUrlForReloadTable;
     }
     
-//    refreshTestServerButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    
-//    [refreshTestServerButton addTarget:self action:@selector(checkUrlManually) forControlEvents:UIControlEventTouchUpInside];
-//    [refreshTestServerButton setFrame:refreshButtonFrame];
-//    [refreshTestServerButton setBackgroundImage:[UIImage imageNamed:@"ReconnectIcon.png"] forState:UIControlStateNormal];
-//    
-//    if(([self.urlTextField.text length] > 0) && !isConnectionToServer && !isCheckingTheServerRightNow) {
-//        [refreshTestServerButton setHidden:NO];
-//    } else {
-//        [refreshTestServerButton setHidden:YES];
-//    }
+    refreshTestServerButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    [refreshTestServerButton addTarget:self action:@selector(checkUrlManually) forControlEvents:UIControlEventTouchUpInside];
+    [refreshTestServerButton setFrame:refreshButtonFrame];
+    [refreshTestServerButton setBackgroundImage:[UIImage imageNamed:@"ReconnectIcon.png"] forState:UIControlStateNormal];
+    
+    if(([self.urlTextField.text length] > 0) && !isConnectionToServer && !isCheckingTheServerRightNow) {
+        [refreshTestServerButton setHidden:NO];
+    } else {
+        [refreshTestServerButton setHidden:YES];
+    }
     
     [cell.contentView addSubview:iconLeftImage];
     [cell.contentView addSubview:self.urlTextField];
-//    [cell.contentView addSubview:refreshTestServerButton];
+    [cell.contentView addSubview:refreshTestServerButton];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
@@ -1247,7 +1258,7 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
 -(UIView *) configureViewForFooterURLServer {
     UIView *view = [[UIView alloc] initWithFrame:textFooterFrame1];
     
-    if (!([self.auxUrlForReloadTable isEqualToString:@""] || ((CheckAccessToServer *)[CheckAccessToServer sharedManager]).delegate == nil)) {
+    if (![self.urlTextField.text isEqualToString:@""] && ((CheckAccessToServer *)[CheckAccessToServer sharedManager]).delegate != nil) {
         
         UILabel *label = [self setTheDefaultStyleOfTheServerFooterLabel];
         UIImageView *errorImage;
@@ -1622,17 +1633,28 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
     DLog(@"6- self.urlTextField.text %@", self.urlTextField.text);
     
     if(self.urlTextField != nil) {
-        NSString *urlWithoutUserPassword = [self stripUsernameAndPassword:self.urlTextField.text];
-        self.auxUrlForReloadTable = [self stripIndexPhpOrAppsFilesFromUrl:urlWithoutUserPassword];
+        if ([DeviceManager sharedManager].currentDevice == nil) {
+            NSString *urlWithoutUserPassword = [self stripUsernameAndPassword:self.urlTextField.text];
+            self.auxUrlForReloadTable = [self stripIndexPhpOrAppsFilesFromUrl:urlWithoutUserPassword];
+        }
     } else {
         //This is when we deleted the last account and go to the login screen
         self.urlTextField = [[UITextField alloc]initWithFrame:self.urlFrame];
-        self.urlTextField.text = self.auxUrlForReloadTable;
+        if ([DeviceManager sharedManager].currentDevice) {
+            self.urlTextField.text = [DeviceManager sharedManager].currentDevice.deviceName;
+        } else {
+            self.urlTextField.text = self.auxUrlForReloadTable;
+        }
         textField = self.urlTextField;
     }
     
-    self.auxUsernameForReloadTable = self.usernameTextField.text;
-    self.auxPasswordForReloadTable = self.passwordTextField.text;
+    if(self.usernameTextField != nil) {
+        self.auxUsernameForReloadTable = self.usernameTextField.text;
+    }
+    
+    if(self.passwordTextField != nil) {
+        self.auxPasswordForReloadTable = self.passwordTextField.text;
+    }
     
     //if it is nill the screen is not here
     if(((CheckAccessToServer *)[CheckAccessToServer sharedManager]).delegate != nil) {
@@ -1792,6 +1814,10 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
 }
 
 -(NSString *)getUrl {
+    if ([DeviceManager sharedManager].currentDevice == nil) {
+        return nil;
+    }
+    
     NSString *httpOrHttps;
     if(isHttps) {
         httpOrHttps = k_https_prefix;
@@ -2267,7 +2293,21 @@ NSString *loginViewControllerRotate = @"loginViewControllerRotate";
 #pragma marK - Action Buttons
 
 -(void)checkUrlManually {
-    [self textFieldDidEndEditing:self.urlTextField];
+    if ([DeviceManager sharedManager].currentDevice.status != ECSDeviceEventOnline) {
+        isCheckingTheServerRightNow = NO;
+        isConnectionToServer = NO;
+        isLoginButtonEnabled = NO;
+        [self.tableView reloadData];
+    }
+    else if ([[DeviceManager sharedManager].currentDevice connect]) {
+        [self textFieldDidEndEditing:self.urlTextField];
+    }
+    else {
+        isCheckingTheServerRightNow = YES;
+        isConnectionToServer = NO;
+        isLoginButtonEnabled = NO;
+        [self.tableView reloadData];
+    }
 }
 
 -(void)hideOrShowPassword {

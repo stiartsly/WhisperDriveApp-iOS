@@ -302,7 +302,6 @@
 		17B92E3F1DC0880000D9F49A /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20D951DB0844B005ACAF0 /* GCDAsyncUdpSocket.m */; };
 		17B92E401DC0884100D9F49A /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20D931DB0844B005ACAF0 /* GCDAsyncSocket.m */; };
 		17B92E411DC0884100D9F49A /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20D951DB0844B005ACAF0 /* GCDAsyncUdpSocket.m */; };
-		17B92E421DC088C000D9F49A /* WhisperManagedCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1794951C1DAE3F83006B86EE /* WhisperManagedCore.framework */; };
 		17B92E431DC088C000D9F49A /* WhisperManagedCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1794951C1DAE3F83006B86EE /* WhisperManagedCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		17D20D961DB0844B005ACAF0 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20D931DB0844B005ACAF0 /* GCDAsyncSocket.m */; };
 		17D20D971DB0844B005ACAF0 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D20D951DB0844B005ACAF0 /* GCDAsyncUdpSocket.m */; };
@@ -2022,7 +2021,6 @@
 				1324298115ADBB3700DF823E /* CoreGraphics.framework in Frameworks */,
 				13824C0A16034C2200A95EAD /* libcrypto.a in Frameworks */,
 				13824C0B16034C2200A95EAD /* libssl.a in Frameworks */,
-				17B92E421DC088C000D9F49A /* WhisperManagedCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -25,6 +25,7 @@
 #import "AppDelegate.h"
 #import "ManageCookiesStorageDB.h"
 #import "ManageAppSettingsDB.h"
+#import "DeviceManager.h"
 
 @interface AddAccountViewController ()
 
@@ -136,7 +137,8 @@
     } else {
         
         UserDto *userDto = [[UserDto alloc] init];
-        userDto.url = [self getUrl];
+        userDto.deviceID = [DeviceManager sharedManager].currentDevice.deviceID;
+        //userDto.url = [self getUrl];
         
         //DLog(@"URL FINAL: %@", userDto.url);
         

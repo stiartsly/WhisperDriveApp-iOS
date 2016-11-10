@@ -26,6 +26,7 @@
 #import "UtilsFramework.h"
 #import "ManageCookiesStorageDB.h"
 #import "CheckCapabilities.h"
+#import "DeviceManager.h"
 
 
 //Initialization the notification
@@ -46,7 +47,24 @@ NSString *relaunchErrorCredentialFilesNotification = @"relaunchErrorCredentialFi
     if (self) {
         self.selectedUser = selectedUser;
         
-        self.auxUrlForReloadTable = self.selectedUser.url;
+        if (selectedUser.deviceID) {
+            BOOL found = NO;
+            for (Device *device in [DeviceManager sharedManager].devices) {
+                if ([device.deviceID isEqualToString:selectedUser.deviceID]) {
+                    [DeviceManager sharedManager].currentDevice = device;
+                    found = YES;
+                    break;
+                }
+            }
+            if (!found) {
+                [DeviceManager sharedManager].currentDevice = nil;
+            }
+        }
+        else {
+            self.auxUrlForReloadTable = self.selectedUser.url;
+            [DeviceManager sharedManager].currentDevice = nil;
+        }
+        
         self.auxUsernameForReloadTable = self.selectedUser.username;
         self.auxPasswordForReloadTable = self.selectedUser.password;
         
@@ -279,7 +297,8 @@ NSString *relaunchErrorCredentialFilesNotification = @"relaunchErrorCredentialFi
     } else {
         
         UserDto *userDto = [[UserDto alloc] init];
-        userDto.url = [self getUrl];
+        userDto.deviceID = [DeviceManager sharedManager].currentDevice.deviceID;
+        //userDto.url = [self getUrl];
         
         self.selectedUser.password = self.passwordTextField.text;
         
