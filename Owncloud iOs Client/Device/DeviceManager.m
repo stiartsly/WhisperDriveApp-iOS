@@ -17,8 +17,8 @@
 #import "TSMessage.h"
 #import <WhisperManagedCore/WhisperManagedCore.h>
 
-static NSString * const ElastosCarrierService = @"192.168.7.195:18080";
-static NSString * const ElastosCarrierAPIservice = @"192.168.7.195:8443";
+static NSString * const ElastosCarrierService = @"140.206.137.6:18080";
+static NSString * const ElastosCarrierAPIservice = @"140.206.137.6:8443";
 static NSString * const APPID = @"3DF1AC53C8BE42EFB14426DECEA2BFDD";
 static int const KMaxSessionNum = 2;
 
